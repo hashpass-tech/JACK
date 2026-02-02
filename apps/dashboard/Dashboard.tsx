@@ -1,0 +1,87 @@
+
+import React, { useState } from 'react';
+import { CreateIntentView } from './views/CreateIntentView';
+import { ExecutionsListView } from './views/ExecutionsListView';
+import { ExecutionDetailView } from './views/ExecutionDetailView';
+
+interface DashboardProps {
+  onBack: () => void;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ onBack }) => {
+  const [activeTab, setActiveTab] = useState<'create' | 'executions'>('create');
+  const [selectedExecutionId, setSelectedExecutionId] = useState<string | null>(null);
+
+  const renderContent = () => {
+    if (selectedExecutionId) {
+      return (
+        <ExecutionDetailView 
+          id={selectedExecutionId} 
+          onBack={() => setSelectedExecutionId(null)} 
+        />
+      );
+    }
+
+    switch (activeTab) {
+      case 'create':
+        return <CreateIntentView onIntentSubmitted={(id) => {
+          setSelectedExecutionId(id);
+          setActiveTab('executions');
+        }} />;
+      case 'executions':
+        return <ExecutionsListView onSelectExecution={setSelectedExecutionId} />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-screen bg-[#0B1020]">
+      {/* Header */}
+      <header className="flex items-center justify-between px-8 py-4 border-b border-white/5 bg-[#0F1A2E]">
+        <div className="flex items-center space-x-6">
+          <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-[#F2B94B] rounded-full flex items-center justify-center">
+              <span className="text-[#0B1020] font-bold text-sm">J</span>
+            </div>
+            <h1 className="font-space font-bold text-xl tracking-tight text-white">JACK DASHBOARD</h1>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <div className="flex bg-[#0B1020] p-1 rounded-lg border border-white/10">
+            <button 
+              onClick={() => {setActiveTab('create'); setSelectedExecutionId(null);}}
+              className={`px-4 py-2 text-sm rounded-md transition-all ${activeTab === 'create' && !selectedExecutionId ? 'bg-[#F2B94B] text-[#0B1020] font-bold shadow-lg' : 'text-gray-400 hover:text-white'}`}
+            >
+              Build Intent
+            </button>
+            <button 
+              onClick={() => {setActiveTab('executions'); setSelectedExecutionId(null);}}
+              className={`px-4 py-2 text-sm rounded-md transition-all ${activeTab === 'executions' || selectedExecutionId ? 'bg-[#F2B94B] text-[#0B1020] font-bold shadow-lg' : 'text-gray-400 hover:text-white'}`}
+            >
+              Executions
+            </button>
+          </div>
+          <button className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-sm border border-white/10 transition-all font-semibold">
+            Connect Wallet
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto p-8 bg-[#0B1020]">
+        <div className="max-w-5xl mx-auto">
+          {renderContent()}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Dashboard;

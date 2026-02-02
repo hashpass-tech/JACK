@@ -1,0 +1,16 @@
+{
+  "name": "jack-monorepo-npm-shim",
+  "private": true,
+  "description": "Shim package.json for Tempo environments that invoke npm (workspace protocol unsupported).",
+  "packageManager": "pnpm@8.15.4",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm -w install && pnpm -w dev",
+    "build": "pnpm -w install && pnpm -w build",
+    "lint": "pnpm -w install && pnpm -w lint",
+    "test": "pnpm -w install && pnpm -w test"
+  },
+  "dependencies": {}
+}

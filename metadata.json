@@ -1,0 +1,7 @@
+{
+  "name": "JACK: Just-in-time Autonomous Cross-chain Kernel",
+  "description": "An intent-based, agent-driven cross-chain DeFi execution kernel featuring a 3D cinematic landing page, intent dashboard, and Uniswap v4 hook-based settlement.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
