@@ -2,7 +2,8 @@
   "name": "jack-monorepo",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "vite build",
+    "build:turbo": "turbo run build",
     "dev": "vite --host 0.0.0.0 --port 3001",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",

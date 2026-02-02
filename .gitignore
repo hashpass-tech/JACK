@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 **/tempobook/**
+config/private.json
+.env
+.env.local
+.env.development.local
