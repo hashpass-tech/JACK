@@ -30,6 +30,9 @@ importers:
       '@secretlint/quick-start':
         specifier: ^11.3.1
         version: 11.3.1
+      '@secretlint/secretlint-rule-preset-recommend':
+        specifier: ^11.3.1
+        version: 11.3.1
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.27
