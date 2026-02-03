@@ -6,7 +6,11 @@ import { Float, Sparkles, useTexture, Image, Text, Billboard } from '@react-thre
 import * as THREE from 'three';
 import jackUrl from '@/apps/landing/public/Jack.png';
 
-const Scene3Dv2: React.FC = () => {
+interface Scene3DProps {
+    onViewDetails?: (layerName: string) => void;
+}
+
+const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails }) => {
     const groupRef = useRef<THREE.Group>(null);
     const [selectedLayer, setSelectedLayer] = useState<number | null>(null);
 
@@ -50,6 +54,7 @@ const Scene3Dv2: React.FC = () => {
                         {...layer}
                         isSelected={selectedLayer === i}
                         onSelect={() => setSelectedLayer(selectedLayer === i ? null : i)}
+                        onViewDetails={() => onViewDetails?.(layer.text)}
                     />
                 ))}
 
@@ -68,8 +73,9 @@ const LayerRing: React.FC<{
     rotation: any,
     speed: number,
     isSelected: boolean,
-    onSelect: () => void
-}> = ({ text, color, radius, rotation, speed, isSelected, onSelect }) => {
+    onSelect: () => void,
+    onViewDetails: () => void
+}> = ({ text, color, radius, rotation, speed, isSelected, onSelect, onViewDetails }) => {
     const ringRef = useRef<THREE.Group>(null);
     const torusRef = useRef<THREE.Mesh>(null);
     const [hovered, setHovered] = useState(false);
@@ -146,7 +152,12 @@ const LayerRing: React.FC<{
                                 </Text>
 
                                 {/* Call to Action Layer */}
-                                <group position={[0, -0.4, 0]}>
+                                <group
+                                    position={[0, -0.4, 0]}
+                                    onClick={(e) => { e.stopPropagation(); onViewDetails(); }}
+                                    onPointerOver={() => (document.body.style.cursor = 'pointer')}
+                                    onPointerOut={() => (document.body.style.cursor = 'auto')}
+                                >
                                     <Text
                                         fontSize={0.18}
                                         color={color}

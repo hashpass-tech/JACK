@@ -41,19 +41,29 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
     return () => window.clearInterval(id);
   }, []);
 
+  const [activeModalLayer, setActiveModalLayer] = React.useState<string | null>(null);
+
+  const layerExplanations: Record<string, string> = {
+    "INTENT": "Captures the user's high-level cross-chain goal. It specifies what needs to be achieved without pre-defining the technical path, allowing the kernel to optimize for speed, cost, or privacy.",
+    "ROUTE": "Calculates the most efficient execution path across multiple chains. It identifies bridges, DEXs, and liquidity sources to fulfill the intent with minimal slippage and maximum security.",
+    "CONSTRAINTS": "Enforces private policies and compliance rules. Execution only proceeds if it satisfies user-defined constraints, institutional guardrails, and risk management parameters.",
+    "SETTLEMENT": "Finalizes the cross-chain execution with guaranteed atomicity. It ensures that state transitions are recorded accurately on all involved chains, completing the lifecycle of the kernel process."
+  };
+
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#0B1020]">
       {/* 3D Scene Layer */}
       <div className="absolute inset-0 z-0">
         <Canvas
           shadows
-          gl={{ antialias: true, stencil: false, depth: true }}
+          dpr={[1, 2]}
+          gl={{ antialias: true, stencil: false, depth: true, powerPreference: "high-performance" }}
         >
-          <PerspectiveCamera makeDefault position={[0, 2, 8]} fov={50} />
+          <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={50} />
           <color attach="background" args={['#0B1020']} />
 
           <Suspense fallback={null}>
-            <Scene3D />
+            <Scene3D onViewDetails={(name) => setActiveModalLayer(name)} />
             <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
             <Environment preset="city" />
           </Suspense>
@@ -107,6 +117,35 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
           Built for the future of Cross-Chain Interoperability
         </footer>
       </div>
+
+      {/* Details Modal */}
+      {activeModalLayer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1020]/80 backdrop-blur-sm">
+          <div className="bg-[#151C2E] border border-[#F2B94B]/30 rounded-2xl p-8 max-w-lg w-full relative shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in duration-300 pointer-events-auto">
+            <button
+              onClick={() => setActiveModalLayer(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className={`w-12 h-1 ${activeModalLayer === "INTENT" || activeModalLayer === "CONSTRAINTS" ? "bg-[#F2B94B]" : "bg-[#38BDF8]"} mb-4`} />
+            <h2 className="text-3xl font-space font-bold mb-4 tracking-tight text-white uppercase">{activeModalLayer} LAYER</h2>
+            <p className="text-gray-300 leading-relaxed text-lg">
+              {layerExplanations[activeModalLayer]}
+            </p>
+            <div className="mt-8 pt-6 border-t border-gray-800">
+              <button
+                onClick={() => setActiveModalLayer(null)}
+                className="w-full py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl font-bold uppercase tracking-widest text-sm transition-all text-white"
+              >
+                Close Details
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Fallback Static Gradient (behind 3D) */}
       <div className="fixed inset-0 bg-gradient-to-b from-[#0B1020] via-[#0F1A2E] to-[#0B1020] -z-10" />
