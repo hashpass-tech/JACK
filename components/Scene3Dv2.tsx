@@ -20,10 +20,10 @@ const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails, selectedLayer, onSel
     texture.colorSpace = THREE.SRGBColorSpace;
 
     const layers = useMemo(() => [
-        { text: "INTENT", color: "#F2B94B", radius: 3.0, rotation: [Math.PI / 2, 0.2, 0], speed: 0.4 },
-        { text: "ROUTE", color: "#38BDF8", radius: 4.0, rotation: [Math.PI / 2.2, -0.3, 0], speed: 0.3 },
-        { text: "CONSTRAINTS", color: "#F2B94B", radius: 5.0, rotation: [Math.PI / 1.8, 0.1, 0], speed: 0.2 },
-        { text: "SETTLEMENT", color: "#38BDF8", radius: 6.0, rotation: [Math.PI / 2.5, 0.4, 0], speed: 0.15 },
+        { text: "INTENT", color: "#F2B94B", radius: 3.2, rotation: [Math.PI / 2, 0.2, 0], speed: 0.4 },
+        { text: "ROUTE", color: "#38BDF8", radius: 4.2, rotation: [Math.PI / 2.2, -0.3, 0], speed: 0.3 },
+        { text: "CONSTRAINTS", color: "#F2B94B", radius: 5.2, rotation: [Math.PI / 1.8, 0.1, 0], speed: 0.2 },
+        { text: "SETTLEMENT", color: "#38BDF8", radius: 6.2, rotation: [Math.PI / 2.5, 0.4, 0], speed: 0.15 },
     ], []);
 
     useFrame((state) => {
@@ -36,22 +36,23 @@ const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails, selectedLayer, onSel
 
     return (
         <group ref={groupRef} position={[0, -0.5, 0]}>
-            {/* The "Jack" Hero - Optimized Transparency */}
-            <Billboard position={[0, 0.5, 0]}>
+            {/* The "Jack" Hero - Standard Mesh for better transparency handling */}
+            <Billboard position={[0, 0.5, 0]} renderOrder={1}>
                 <Float speed={2} rotationIntensity={0.1} floatIntensity={0.5} floatingRange={[-0.1, 0.1]}>
-                    <Image
-                        url={jackUrl}
-                        scale={[3.2, 3.2]}
-                        transparent
-                        side={THREE.DoubleSide}
-                        material-alphaTest={0.5}
-                        material-depthWrite={true}
-                    />
+                    <mesh>
+                        <planeGeometry args={[2.8, 2.8]} />
+                        <meshBasicMaterial
+                            map={texture}
+                            transparent={true}
+                            depthWrite={false}
+                            side={THREE.DoubleSide}
+                        />
+                    </mesh>
                 </Float>
             </Billboard>
 
-            {/* The 4 Architectural Layers */}
-            <group position={[0, 0.5, 0]}>
+            {/* The 4 Architectural Layers - Elevated renderOrder ensures they draw ON TOP of the hero */}
+            <group position={[0, 0.5, 0]} renderOrder={10}>
                 {layers.map((layer, i) => (
                     <LayerRing
                         key={i}
