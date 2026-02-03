@@ -8,11 +8,12 @@ import jackUrl from '@/apps/landing/public/Jack.png';
 
 interface Scene3DProps {
     onViewDetails?: (layerName: string) => void;
+    selectedLayer: number | null;
+    onSelect: (index: number | null) => void;
 }
 
-const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails }) => {
+const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails, selectedLayer, onSelect }) => {
     const groupRef = useRef<THREE.Group>(null);
-    const [selectedLayer, setSelectedLayer] = useState<number | null>(null);
 
     // Load texture
     const texture = useTexture(jackUrl);
@@ -53,7 +54,7 @@ const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails }) => {
                         key={i}
                         {...layer}
                         isSelected={selectedLayer === i}
-                        onSelect={() => setSelectedLayer(selectedLayer === i ? null : i)}
+                        onSelect={() => onSelect(selectedLayer === i ? null : i)}
                         onViewDetails={() => onViewDetails?.(layer.text)}
                     />
                 ))}

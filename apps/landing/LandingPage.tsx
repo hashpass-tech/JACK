@@ -42,6 +42,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
   }, []);
 
   const [activeModalLayer, setActiveModalLayer] = React.useState<string | null>(null);
+  const [selected3DLayer, setSelected3DLayer] = React.useState<number | null>(null);
+
+  const handleCloseModal = () => {
+    setActiveModalLayer(null);
+    setSelected3DLayer(null);
+  };
 
   const layerExplanations: Record<string, string> = {
     "INTENT": "Captures the user's high-level cross-chain goal. It specifies what needs to be achieved without pre-defining the technical path, allowing the kernel to optimize for speed, cost, or privacy.",
@@ -63,7 +69,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
           <color attach="background" args={['#0B1020']} />
 
           <Suspense fallback={null}>
-            <Scene3D onViewDetails={(name) => setActiveModalLayer(name)} />
+            <Scene3D
+              selectedLayer={selected3DLayer}
+              onSelect={setSelected3DLayer}
+              onViewDetails={(name) => setActiveModalLayer(name)}
+            />
             <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
             <Environment preset="city" />
           </Suspense>
@@ -123,7 +133,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1020]/80 backdrop-blur-sm">
           <div className="bg-[#151C2E] border border-[#F2B94B]/30 rounded-2xl p-8 max-w-lg w-full relative shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in duration-300 pointer-events-auto">
             <button
-              onClick={() => setActiveModalLayer(null)}
+              onClick={handleCloseModal}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,7 +147,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
             </p>
             <div className="mt-8 pt-6 border-t border-gray-800">
               <button
-                onClick={() => setActiveModalLayer(null)}
+                onClick={handleCloseModal}
                 className="w-full py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl font-bold uppercase tracking-widest text-sm transition-all text-white"
               >
                 Close Details
