@@ -94,13 +94,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
       </div>
 
       {/* UI Overlay */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full p-8 md:p-16 pointer-events-none">
-        <header className="absolute top-0 left-0 w-full p-8 md:p-16 flex justify-between items-center max-w-7xl mx-auto right-0">
-          <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-[#F2B94B] rounded-full flex items-center justify-center shadow-[0_0_20px_#F2B94B]">
-              <span className="text-[#0B1020] font-bold text-xl">J</span>
+      <div className="relative z-10 flex flex-col items-center justify-center h-full p-6 md:p-16 pointer-events-none">
+        <header className="absolute top-0 left-0 w-full p-6 md:p-16 flex justify-between items-center max-w-7xl mx-auto right-0">
+          <div className="flex items-center space-x-2 md:space-x-4">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-[#F2B94B] rounded-full flex items-center justify-center shadow-[0_0_20px_#F2B94B]">
+              <span className="text-[#0B1020] font-bold text-lg md:text-xl">J</span>
             </div>
-            <h1 className="text-2xl font-space font-bold tracking-widest text-[#F2B94B]">JACK</h1>
+            <h1 className="text-xl md:text-2xl font-space font-bold tracking-widest text-[#F2B94B]">JACK</h1>
           </div>
           <nav className="hidden md:flex space-x-8 pointer-events-auto">
             <a href="https://storage.googleapis.com/jack-protocol-public/JACK-Whitepaper.pdf" download="JACK-Whitepaper.pdf" className="text-sm uppercase tracking-widest hover:text-[#38BDF8] transition-colors">Whitepaper</a>
@@ -124,15 +124,25 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
           </button>
         </main>
 
-        <footer className="absolute bottom-0 w-full text-center text-xs text-gray-500 uppercase tracking-widest pb-8">
-          Built for the future of Cross-Chain Interoperability
+        <footer className="absolute bottom-8 w-full px-4 text-center pointer-events-auto">
+          <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest mb-2">
+            Built for the future of Cross-Chain Interoperability
+          </p>
+          <a
+            href="https://lukas.money"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[9px] md:text-xs text-[#F2B94B]/60 hover:text-[#F2B94B] transition-colors uppercase tracking-[0.2em]"
+          >
+            Research by lukas.money Team
+          </a>
         </footer>
       </div>
 
       {/* Details Modal */}
       {activeModalLayer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1020]/80 backdrop-blur-sm">
-          <div className="bg-[#151C2E] border border-[#F2B94B]/30 rounded-2xl p-8 max-w-lg w-full relative shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in duration-300 pointer-events-auto">
+          <div className="bg-[#151C2E] border border-[#F2B94B]/30 rounded-2xl p-6 md:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto relative shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in duration-300 pointer-events-auto">
             <button
               onClick={handleCloseModal}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -142,8 +152,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
               </svg>
             </button>
             <div className={`w-12 h-1 ${activeModalLayer === "INTENT" || activeModalLayer === "CONSTRAINTS" ? "bg-[#F2B94B]" : "bg-[#38BDF8]"} mb-4`} />
-            <h2 className="text-3xl font-space font-bold mb-4 tracking-tight text-white uppercase">{activeModalLayer} LAYER</h2>
-            <p className="text-gray-300 leading-relaxed text-lg">
+            <h2 className="text-2xl md:text-3xl font-space font-bold mb-4 tracking-tight text-white uppercase">{activeModalLayer} LAYER</h2>
+            <p className="text-gray-300 leading-relaxed text-base md:text-lg">
               {layerExplanations[activeModalLayer]}
             </p>
             <div className="mt-8 pt-6 border-t border-gray-800">

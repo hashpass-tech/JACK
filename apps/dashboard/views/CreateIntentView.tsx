@@ -22,7 +22,7 @@ export const CreateIntentView: React.FC<CreateIntentViewProps> = ({ onIntentSubm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     // Simulate SDK usage
     const sdk = new JACK_SDK();
     const intent = sdk.createIntent({
@@ -39,7 +39,7 @@ export const CreateIntentView: React.FC<CreateIntentViewProps> = ({ onIntentSubm
     });
 
     const executionId = await sdk.submitIntent(intent);
-    
+
     setTimeout(() => {
       setLoading(false);
       onIntentSubmitted(executionId);
@@ -52,13 +52,13 @@ export const CreateIntentView: React.FC<CreateIntentViewProps> = ({ onIntentSubm
         <div className="bg-[#0F1A2E] border border-white/5 rounded-2xl p-8 shadow-2xl">
           <h2 className="text-2xl font-space font-bold mb-6 text-[#F2B94B]">Submit Cross-Chain Intent</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs uppercase tracking-widest text-gray-500">Source Chain</label>
-                <select 
+                <label className="text-[10px] md:text-xs uppercase tracking-widest text-gray-500">Source Chain</label>
+                <select
                   value={form.sourceChain}
-                  onChange={e => setForm({...form, sourceChain: e.target.value})}
-                  className="w-full bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#F2B94B] transition-colors"
+                  onChange={e => setForm({ ...form, sourceChain: e.target.value })}
+                  className="w-full bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#F2B94B] transition-colors text-sm"
                 >
                   <option>Ethereum</option>
                   <option>Arbitrum</option>
@@ -67,11 +67,11 @@ export const CreateIntentView: React.FC<CreateIntentViewProps> = ({ onIntentSubm
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs uppercase tracking-widest text-gray-500">Destination Chain</label>
-                <select 
+                <label className="text-[10px] md:text-xs uppercase tracking-widest text-gray-500">Destination Chain</label>
+                <select
                   value={form.destChain}
-                  onChange={e => setForm({...form, destChain: e.target.value})}
-                  className="w-full bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#F2B94B] transition-colors"
+                  onChange={e => setForm({ ...form, destChain: e.target.value })}
+                  className="w-full bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#F2B94B] transition-colors text-sm"
                 >
                   <option>Ethereum</option>
                   <option>Base</option>
@@ -81,18 +81,18 @@ export const CreateIntentView: React.FC<CreateIntentViewProps> = ({ onIntentSubm
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs uppercase tracking-widest text-gray-500">Input Asset</label>
+                <label className="text-[10px] md:text-xs uppercase tracking-widest text-gray-500">Input Asset</label>
                 <div className="flex space-x-2">
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={form.amountIn}
-                    onChange={e => setForm({...form, amountIn: e.target.value})}
+                    onChange={e => setForm({ ...form, amountIn: e.target.value })}
                     placeholder="0.00"
-                    className="flex-1 bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#F2B94B]"
+                    className="w-2/3 bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#F2B94B] text-sm"
                   />
-                  <select className="bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none">
+                  <select className="w-1/3 bg-[#0B1020] border border-white/10 rounded-xl px-2 md:px-4 py-3 outline-none text-sm">
                     <option>USDC</option>
                     <option>ETH</option>
                     <option>LINK</option>
@@ -100,16 +100,16 @@ export const CreateIntentView: React.FC<CreateIntentViewProps> = ({ onIntentSubm
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-xs uppercase tracking-widest text-gray-500">Minimum Out (Constraint)</label>
+                <label className="text-[10px] md:text-xs uppercase tracking-widest text-gray-500">Minimum Out (Constraint)</label>
                 <div className="flex space-x-2">
-                  <input 
+                  <input
                     type="number"
                     value={form.minOut}
-                    onChange={e => setForm({...form, minOut: e.target.value})}
+                    onChange={e => setForm({ ...form, minOut: e.target.value })}
                     placeholder="0.00"
-                    className="flex-1 bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#F2B94B]"
+                    className="w-2/3 bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#F2B94B] text-sm"
                   />
-                  <select className="bg-[#0B1020] border border-white/10 rounded-xl px-4 py-3 outline-none">
+                  <select className="w-1/3 bg-[#0B1020] border border-white/10 rounded-xl px-2 md:px-4 py-3 outline-none text-sm">
                     <option>WETH</option>
                     <option>WBTC</option>
                     <option>USDC</option>
@@ -130,16 +130,16 @@ export const CreateIntentView: React.FC<CreateIntentViewProps> = ({ onIntentSubm
                   <p className="text-xs text-gray-500">Encrypt constraints for agent-only visibility.</p>
                 </div>
               </div>
-              <button 
+              <button
                 type="button"
-                onClick={() => setForm({...form, privacy: !form.privacy})}
+                onClick={() => setForm({ ...form, privacy: !form.privacy })}
                 className={`w-12 h-6 rounded-full transition-colors relative ${form.privacy ? 'bg-[#F2B94B]' : 'bg-gray-700'}`}
               >
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${form.privacy ? 'left-7' : 'left-1'}`} />
               </button>
             </div>
 
-            <button 
+            <button
               type="submit"
               disabled={loading}
               className="w-full py-4 bg-[#F2B94B] text-[#0B1020] font-bold rounded-xl shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
