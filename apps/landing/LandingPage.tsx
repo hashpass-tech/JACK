@@ -103,6 +103,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
             <h1 className="text-2xl font-space font-bold tracking-widest text-[#F2B94B]">JACK</h1>
           </div>
           <nav className="hidden md:flex space-x-8 pointer-events-auto">
+            <a href="/JACK-V1.pdf" download="JACK-Whitepaper.pdf" className="text-sm uppercase tracking-widest hover:text-[#38BDF8] transition-colors">Whitepaper</a>
             <a href="#docs" className="text-sm uppercase tracking-widest hover:text-[#38BDF8] transition-colors">Docs</a>
             <a href="#sdk" className="text-sm uppercase tracking-widest hover:text-[#38BDF8] transition-colors">SDK</a>
             <a href="#github" className="text-sm uppercase tracking-widest hover:text-[#38BDF8] transition-colors">GitHub</a>
