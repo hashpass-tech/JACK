@@ -42,7 +42,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
   }, []);
 
   const [activeModalLayer, setActiveModalLayer] = React.useState<string | null>(null);
-  const [selected3DLayer, setSelected3DLayer] = React.useState<number | null>(null);
+  const [selected3DLayer, setSelected3DLayer] = React.useState<number | null>(0);
 
   const handleCloseModal = () => {
     setActiveModalLayer(null);
