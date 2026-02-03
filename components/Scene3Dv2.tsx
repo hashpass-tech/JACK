@@ -36,16 +36,17 @@ const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails, selectedLayer, onSel
 
     return (
         <group ref={groupRef} position={[0, -0.5, 0]}>
-            {/* The "Jack" Hero */}
-            <Float speed={2} rotationIntensity={0.1} floatIntensity={0.5} floatingRange={[-0.1, 0.1]}>
-                <Image
-                    url={jackUrl}
-                    scale={[4.8, 4.8]}
-                    transparent
-                    position={[0, 0.5, 0]}
-                    side={THREE.DoubleSide}
-                />
-            </Float>
+            {/* The "Jack" Hero - Billboarded to always be readable */}
+            <Billboard position={[0, 0.5, 0]}>
+                <Float speed={2} rotationIntensity={0.1} floatIntensity={0.5} floatingRange={[-0.1, 0.1]}>
+                    <Image
+                        url={jackUrl}
+                        scale={[4.8, 4.8]}
+                        transparent
+                        side={THREE.DoubleSide}
+                    />
+                </Float>
+            </Billboard>
 
             {/* The 4 Architectural Layers */}
             <group position={[0, 0.5, 0]}>
