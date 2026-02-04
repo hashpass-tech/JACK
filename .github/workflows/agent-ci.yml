@@ -1,0 +1,38 @@
+name: Agent Tasks
+
+on:
+  push:
+    paths:
+      - '.agent-tasks/**'
+
+jobs:
+  execute-tasks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      
+      - name: Install pnpm
+        run: npm install -g pnpm
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Run agent tasks
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
+          PREFERRED_AGENT: claude-code
+        run: pnpm agent:run .agent-tasks/tasks.yaml
+      
+      - name: Commit results
+        run: |
+          git config user.name "Agent Bot"
+          git config user.email "bot@jack.dev"
+          git add .
+          git commit -m "chore: agent-generated code execution results" || true
+          git push

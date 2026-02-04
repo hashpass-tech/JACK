@@ -1,0 +1,66 @@
+version: "1.0"
+project: "JACK"
+sprint: "day-1"
+
+tasks:
+  - id: "D1-CRIT-1"
+    title: "Create JACKPolicyHook.sol skeleton"
+    type: "code_generation"
+    priority: "critical"
+    estimate: "2h"
+    
+    requirement: |
+      Create a Uniswap v4 hook contract called JACKPolicyHook.
+      
+      Requirements:
+      - Must inherit from v4-core's BaseHook
+      - Must implement beforeSwap hook
+      - Must emit PolicyChecked event with (intentId, allowed, reason)
+      - Must have configurable max slippage parameter
+      
+      Architecture:
+      - Hook is registered with PoolManager
+      - beforeSwap intercepts all swaps
+      - Policy logic checks slippage before allowing swap
+    
+    acceptance:
+      - "Compiles with forge build"
+      - "Inherits from BaseHook"
+      - "Has PolicyChecked event definition"
+      - "Has beforeSwap function with correct signature"
+    
+    context:
+      - "contracts/lib/v4-core/src/BaseHook.sol"
+      - "contracts/lib/v4-core/src/interfaces/IHooks.sol"
+    
+    output:
+      path: "contracts/src/JACKPolicyHook.sol"
+      type: "solidity"
+      
+    agent_config:
+      kiro:
+        mode: "expert"
+      claude_code:
+        temperature: 0.1
+      
+  - id: "D1-CRIT-2"
+    title: "Implement slippage check logic"
+    type: "code_modification"
+    priority: "critical"
+    depends_on: ["D1-CRIT-1"]
+    
+    requirement: |
+      Add slippage enforcement logic to JACKPolicyHook.
+      
+      Logic:
+      1. Calculate expected output from input amount
+      2. Compare with actual amountOut from swap params
+      3. If slippage > maxSlippageBps, revert
+    
+    acceptance:
+      - "Compiles with forge build"
+      - "Tests pass with forge test"
+    
+    output:
+      path: "contracts/src/JACKPolicyHook.sol"
+      type: "solidity"
