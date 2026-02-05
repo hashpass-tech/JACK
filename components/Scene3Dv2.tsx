@@ -1,7 +1,7 @@
 
 /// <reference types="@react-three/fiber" />
 import React, { useRef, useMemo, useState } from 'react';
-import { useFrame, ThreeEvent } from '@react-three/fiber';
+import { useFrame, ThreeEvent, useThree } from '@react-three/fiber';
 import { Float, Sparkles, useTexture, Image, Text, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
 import jackUrl from '@/apps/landing/public/Jack.png';
@@ -13,7 +13,13 @@ interface Scene3DProps {
 }
 
 const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails, selectedLayer, onSelect }) => {
+    const { viewport } = useThree();
     const groupRef = useRef<THREE.Group>(null);
+
+    // Scale factor for mobile
+    const isMobile = viewport.width < 5;
+    const baseScale = isMobile ? viewport.width / 5.5 : 0.8;
+    const groupYOffset = isMobile ? 2.0 : -0.2;
 
     // Load texture
     const texture = useTexture(jackUrl);
@@ -35,7 +41,7 @@ const Scene3Dv2: React.FC<Scene3DProps> = ({ onViewDetails, selectedLayer, onSel
     });
 
     return (
-        <group ref={groupRef} position={[0, -0.2, 0]} scale={[0.8, 0.8, 0.8]}>
+        <group ref={groupRef} position={[0, groupYOffset, 0]} scale={[baseScale, baseScale, baseScale]}>
             {/* The "Jack" Hero - Standard Mesh for better transparency handling */}
             <Billboard position={[0, 0.5, 0]} renderOrder={1}>
                 <Float speed={2} rotationIntensity={0.1} floatIntensity={0.5} floatingRange={[-0.1, 0.1]}>

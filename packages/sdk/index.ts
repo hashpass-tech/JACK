@@ -1,8 +1,12 @@
-
-/**
- * JACK SDK - Just-in-time Autonomous Cross-chain Kernel
- * Used for building, signing, and monitoring cross-chain intents.
- */
+export enum ExecutionStatus {
+  CREATED = 'CREATED',
+  QUOTED = 'QUOTED',
+  EXECUTING = 'EXECUTING',
+  SETTLING = 'SETTLING',
+  SETTLED = 'SETTLED',
+  ABORTED = 'ABORTED',
+  EXPIRED = 'EXPIRED'
+}
 
 export interface IntentParams {
   sourceChain: string;
@@ -10,74 +14,97 @@ export interface IntentParams {
   tokenIn: string;
   tokenOut: string;
   amountIn: string;
-  constraints: {
-    minAmountOut: string;
-    deadline: number;
-    privacy: boolean;
-    customPolicies?: string[];
-  };
+  minAmountOut: string;
+  deadline: number;
 }
 
 export interface Intent {
   id: string;
   params: IntentParams;
   signature?: string;
+  status: ExecutionStatus;
+  createdAt: number;
+  executionSteps: ExecutionStep[];
+  settlementTx?: string;
+}
+
+export interface ExecutionStep {
+  step: string;
+  status: 'COMPLETED' | 'IN_PROGRESS' | 'PENDING' | 'FAILED';
   timestamp: number;
+  details?: string;
 }
 
 export class JACK_SDK {
-  private solverEndpoint: string;
+  private baseUrl: string;
 
-  constructor(endpoint: string = "https://kernel.jack.io/v1") {
-    this.solverEndpoint = endpoint;
+  constructor(baseUrl: string = '/api') {
+    this.baseUrl = baseUrl;
   }
 
   /**
-   * Creates a structured intent object
+   * Constructs the EIP-712 typed data for an intent
    */
-  createIntent(params: IntentParams): Intent {
-    const id = `JK-${Math.floor(Math.random() * 100000)}`;
-    return {
-      id,
-      params,
-      timestamp: Date.now()
+  getIntentTypedData(params: IntentParams) {
+    const domain = {
+      name: 'JACK',
+      version: '1',
+      chainId: 84532, // Base Sepolia
+      verifyingContract: '0x0000000000000000000000000000000000000000' as `0x${string}`
     };
-  }
 
-  /**
-   * Signs the intent using the user's wallet
-   * @param intent The intent to sign
-   * @param wallet A viem or ethers-like wallet instance
-   */
-  async signIntent(intent: Intent, wallet: any): Promise<Intent> {
-    // In a real app, use EIP-712 typed data signing
-    console.log("Signing intent for wallet", wallet.address);
-    const signature = "0xmock_signature_" + Math.random().toString(16).slice(2);
-    return { ...intent, signature };
-  }
-
-  /**
-   * Submits the intent to the solver network
-   */
-  async submitIntent(intent: Intent): Promise<string> {
-    console.log("Submitting intent to kernel", intent);
-    // Mock API call
-    return intent.id;
-  }
-
-  /**
-   * Fetches the current execution status of an intent
-   */
-  async getExecutionStatus(id: string) {
-    // Mock status return
-    return {
-      id,
-      status: 'ROUTING',
-      progress: 45,
-      steps: [
-        { name: 'Bridging', status: 'COMPLETED' },
-        { name: 'Settling', status: 'IN_PROGRESS' }
+    const types = {
+      Intent: [
+        { name: 'sourceChain', type: 'string' },
+        { name: 'destinationChain', type: 'string' },
+        { name: 'tokenIn', type: 'string' },
+        { name: 'tokenOut', type: 'string' },
+        { name: 'amountIn', type: 'string' },
+        { name: 'minAmountOut', type: 'string' },
+        { name: 'deadline', type: 'uint256' }
       ]
     };
+
+    return { domain, types, message: params, primaryType: 'Intent' as const };
+  }
+
+  /**
+   * Submits a signed intent to the Kernel
+   */
+  async submitIntent(params: IntentParams, signature: string): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/intents`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...params, signature })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to submit intent');
+    }
+
+    const data = await response.json();
+    return data.intentId;
+  }
+
+  /**
+   * Polls the status of an intent execution
+   */
+  async getExecutionStatus(intentId: string): Promise<Intent> {
+    const response = await fetch(`${this.baseUrl}/intents/${intentId}`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch execution status');
+    }
+
+    return await response.json();
+  }
+
+  /**
+   * Fetches the complete list of intents for the dashboard
+   */
+  async listIntents(): Promise<Intent[]> {
+    const response = await fetch(`${this.baseUrl}/intents`);
+    if (!response.ok) return [];
+    return await response.json();
   }
 }

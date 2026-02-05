@@ -4,8 +4,8 @@ import { OrbitControls, PerspectiveCamera, Environment, Stars } from '@react-thr
 import Scene3D from '@/components/Scene3Dv2';
 
 const whitepaperVersions = [
-  { label: 'Latest', filename: 'JACK-Whitepaper.pdf' },
-  { label: 'v1.0.1', filename: 'JACK-Whitepaper-v1.0.1.pdf' }
+  { label: 'Latest (v1.0.1)', filename: 'JACK-Whitepaper-v1.0.1.pdf' },
+  { label: 'v1.0.0', filename: 'JACK-Whitepaper-v1.0.0.pdf' }
 ];
 
 const layerExplanations: Record<string, string> = {
@@ -58,20 +58,19 @@ const deriveDashboardUrl = (): string => {
     if (envUrl) {
       return envUrl;
     }
-    // Always use /dashboard relative to current origin for production/testnet
     return `${origin}/dashboard`;
   }
   return envUrl || '/dashboard';
 };
 
 const LandingPage: React.FC = () => {
-  const landingVersion = import.meta.env.VITE_LANDING_VERSION ?? '0.0.0';
-  const dashboardVersion = import.meta.env.VITE_DASHBOARD_VERSION ?? '0.0.0';
+  const landingVersion = import.meta.env.VITE_LANDING_VERSION ?? '1.0.1';
   const dashboardUrl = deriveDashboardUrl();
   const [activeModalLayer, setActiveModalLayer] = useState<string | null>(null);
   const [selected3DLayer, setSelected3DLayer] = useState<number | null>(0);
   const [contentVisible, setContentVisible] = useState(false);
   const [whitepaperOpen, setWhitepaperOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const whitepaperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -134,15 +133,16 @@ const LandingPage: React.FC = () => {
     setSelected3DLayer(null);
   };
 
-    return (
-      <div className="relative w-full min-h-screen bg-[#0B1020] text-white">
-      <div className="absolute inset-0 z-0 h-screen overflow-hidden pointer-events-none">
+  return (
+    <div className="relative w-full min-h-screen bg-[#0B1020] text-white font-space overflow-x-hidden">
+      {/* 3D Core Layer */}
+      <div className="fixed inset-0 z-0 h-screen overflow-hidden pointer-events-auto">
         <Canvas
           shadows
           dpr={[1, 2]}
           gl={{ antialias: true, stencil: false, depth: true, powerPreference: 'high-performance' }}
         >
-          <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={50} />
+          <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
           <color attach="background" args={['#0B1020']} />
 
           <Suspense fallback={null}>
@@ -155,70 +155,66 @@ const LandingPage: React.FC = () => {
             <Environment preset="city" />
           </Suspense>
 
-          <ambientLight intensity={0.25} />
-          <pointLight position={[10, 10, 10]} intensity={1.5} color="#F2B94B" />
-          <spotLight position={[-5, 5, 5]} angle={0.15} penumbra={1} intensity={2} color="#38BDF8" castShadow />
+          <ambientLight intensity={0.4} />
+          <pointLight position={[10, 10, 10]} intensity={2} color="#F2B94B" />
+          <spotLight position={[-5, 5, 5]} angle={0.15} penumbra={1} intensity={3} color="#38BDF8" castShadow />
 
           <OrbitControls
             enableZoom={false}
             maxPolarAngle={Math.PI / 2}
             minPolarAngle={Math.PI / 3}
             autoRotate
-            autoRotateSpeed={0.5}
+            autoRotateSpeed={0.4}
           />
         </Canvas>
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col">
-        <header className="pointer-events-auto absolute inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-6 md:px-12">
-          <div className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F2B94B] shadow-[0_0_25px_rgba(242,185,75,0.6)]">
-              <span className="font-space text-lg font-bold text-[#0B1020]">J</span>
+      {/* Content Overlay */}
+      <div className="relative z-10 flex min-h-screen flex-col pointer-events-none">
+        <header className="absolute inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-6 md:px-12 backdrop-blur-sm bg-gradient-to-b from-[#0B1020]/80 to-transparent pointer-events-auto">
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div
+              onClick={scrollToTop}
+              className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl md:rounded-2xl bg-[#F2B94B] shadow-[0_0_30px_rgba(242,185,75,0.4)] hover:scale-110 transition-transform cursor-pointer"
+            >
+              <span className="font-space text-xl md:text-2xl font-black text-[#0B1020]">J</span>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.5em] text-gray-300">JACK</p>
-              <p className="text-sm font-semibold text-white">Kernel</p>
+              <p className="text-[8px] md:text-[10px] uppercase font-black tracking-[0.4em] md:tracking-[0.6em] text-[#F2B94B]">JACK</p>
+              <p className="text-xs md:text-sm font-bold text-white tracking-widest leading-none">Autonomous Kernel</p>
             </div>
           </div>
-          <nav className="pointer-events-auto hidden items-center space-x-8 text-xs uppercase tracking-[0.2em] text-gray-400 md:flex">
-            <a href="https://github.com/hashpass-tech/JACK" target="_blank" rel="noreferrer" className="hover:text-[#38BDF8] transition-colors">Docs</a>
-            <a href="https://github.com/hashpass-tech/JACK" target="_blank" rel="noreferrer" className="hover:text-[#38BDF8] transition-colors">SDK</a>
+
+          {/* Desktop Nav */}
+          <nav className="hidden items-center space-x-8 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 md:flex">
+            <a href="https://github.com/hashpass-tech/JACK" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Documentation</a>
             <div className="relative group" ref={whitepaperRef}>
               <button
                 type="button"
-                className="flex items-center gap-1 hover:text-[#38BDF8] transition-colors"
-                aria-haspopup="true"
-                aria-expanded={whitepaperOpen}
+                className="flex items-center gap-1 hover:text-white transition-colors"
                 onClick={(event) => {
                   event.stopPropagation();
                   setWhitepaperOpen((prev) => !prev);
                 }}
-                onKeyDown={(event) => {
-                  if (event.key === 'Escape') {
-                    setWhitepaperOpen(false);
-                  }
-                }}
               >
-                Whitepaper
+                Whitepaper (v1.0.1)
                 <svg className="h-3 w-3 stroke-current" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 9l6 6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M6 9l6 6 6-6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
               <div
-                className={`absolute right-0 mt-3 w-56 rounded-2xl border border-white/10 bg-[#0B1020]/90 px-4 py-3 text-left text-[11px] uppercase tracking-[0.4em] text-gray-300 shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-200 ease-out ${
-                  whitepaperOpen ? 'visible opacity-100 translate-y-0' : 'invisible opacity-0 -translate-y-1'
-                } group-hover:visible group-hover:opacity-100 group-hover:translate-y-0`}
+                className={`absolute right-0 mt-4 w-64 rounded-2xl border border-white/10 bg-[#0F1A2E]/95 px-6 py-5 text-left shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all duration-300 ${whitepaperOpen ? 'visible opacity-100 translate-y-0' : 'invisible opacity-0 -translate-y-2'
+                  }`}
               >
-                <p className="text-[9px] uppercase tracking-[0.6em] text-gray-500">Download</p>
-                <div className="mt-2 space-y-1 text-[10px] tracking-[0.3em]">
+                <p className="text-[8px] font-black uppercase tracking-[0.5em] text-[#F2B94B] mb-4">Select Specification</p>
+                <div className="space-y-2">
                   {whitepaperVersions.map((paper) => (
                     <a
                       key={paper.filename}
                       href={`/whitepapper/${paper.filename}`}
                       target="_blank"
                       rel="noreferrer"
-                      onClick={() => setWhitepaperOpen(false)}
-                      className="block rounded-xl border border-white/10 px-3 py-2 text-white transition hover:border-white/40"
+                      className="block rounded-xl border border-white/5 bg-white/5 px-4 py-3 text-[10px] font-bold text-white transition hover:border-[#F2B94B]/50 hover:bg-[#F2B94B]/10 uppercase tracking-widest"
                     >
                       {paper.label}
                     </a>
@@ -226,157 +222,204 @@ const LandingPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <a href="https://github.com/hashpass-tech/JACK" target="_blank" rel="noreferrer" className="hover:text-[#38BDF8] transition-colors">GitHub</a>
+            <a href={dashboardUrl} className="px-6 py-3 bg-white/5 rounded-xl border border-white/10 text-white hover:bg-[#F2B94B] hover:text-[#0B1020] hover:border-[#F2B94B] transition-all font-black">Open App</a>
           </nav>
+
+          {/* Mobile Nav Toggle */}
+          <button
+            className="flex flex-col space-y-1.5 md:hidden p-2 pointer-events-auto relative z-[110]"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <div className={`w-6 h-0.5 bg-[#F2B94B] transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+            <div className={`w-6 h-0.5 bg-[#F2B94B] transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+            <div className={`w-6 h-0.5 bg-[#F2B94B] transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          </button>
         </header>
 
-          <div className="flex flex-1 flex-col scroll-smooth snap-none md:snap-y md:snap-mandatory">
+        {/* Mobile Menu Overlay - Fully opaque to avoid overlap clutter */}
+        <div className={`fixed inset-0 z-[100] bg-[#0B1020] flex flex-col items-center justify-center transition-all duration-500 md:hidden pointer-events-auto ${mobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}>
+          <button
+            className="absolute top-8 right-8 p-4 text-[#F2B94B]"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close Menu"
+          >
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <nav className="flex flex-col items-center space-y-12 text-sm font-black uppercase tracking-[0.4em]">
+            <a href="https://github.com/hashpass-tech/JACK" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-[#F2B94B]">Documentation</a>
+
+            <div className="flex flex-col items-center space-y-8">
+              <p className="text-gray-500 text-[10px] tracking-[0.6em] border-b border-white/10 pb-2">Whitepaper Specs</p>
+              <div className="flex flex-col space-y-4">
+                {whitepaperVersions.map(p => (
+                  <a
+                    key={p.filename}
+                    href={`/whitepapper/${p.filename}`}
+                    className="px-10 py-4 bg-white/5 border border-white/10 rounded-2xl text-[#F2B94B] text-[10px] text-center w-64 uppercase tracking-widest font-bold hover:bg-[#F2B94B]/10 transition-colors"
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {p.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <a
+              href={dashboardUrl}
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-12 py-5 bg-[#F2B94B] text-[#0B1020] rounded-2xl font-black shadow-[0_20px_50px_rgba(242,185,75,0.3)] hover:scale-105 transition-transform"
+            >
+              Open App
+            </a>
+          </nav>
+        </div>
+
+        <div className="flex flex-1 flex-col">
           <main
             id="hero"
-              className="relative flex flex-1 min-h-screen items-center justify-center snap-start"
+            className="relative flex flex-1 min-h-screen items-center justify-center pt-32 md:pt-20 pointer-events-none"
           >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 z-20 mt-64 md:mt-24 pointer-events-auto">
               <a
                 href={dashboardUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="pointer-events-auto absolute bottom-24 left-1/2 z-20 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#F2B94B] to-[#FFD16D] px-8 py-3 text-[12px] font-semibold uppercase tracking-[0.4em] text-[#0B1020] shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition hover:scale-[1.03]"
+                className="w-full sm:w-auto px-10 md:px-12 py-4 md:py-5 bg-[#F2B94B] text-[#0B1020] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] rounded-xl md:rounded-2xl shadow-[0_20px_50px_rgba(242,185,75,0.3)] hover:scale-105 transition-all text-[10px] md:text-sm text-center"
               >
-                Open Dashboard
+                Enter the Kernel
               </a>
+              <button
+                onClick={scrollToContent}
+                className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-white/5 text-white font-black uppercase tracking-[0.15em] md:tracking-[0.2em] rounded-xl md:rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-xs md:text-sm"
+              >
+                Read Thesis
+              </button>
+            </div>
+
             <button
               type="button"
-              aria-label="Scroll to explore"
               onClick={scrollToContent}
-              className={`pointer-events-auto absolute left-1/2 top-[calc(100vh-68px)] -translate-x-1/2 rounded-full border border-white/30 bg-black/30 px-6 py-3 text-[10px] uppercase tracking-[0.4em] text-white transition duration-500 ${
-                contentVisible ? 'opacity-0' : 'opacity-100'
-              }`}
+              className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-2 text-[8px] font-black uppercase tracking-[0.8em] text-gray-500 transition-opacity duration-500 pointer-events-auto ${contentVisible ? 'opacity-0' : 'opacity-100'
+                }`}
             >
-              <span>Scroll to explore</span>
-              <span className="mt-2 flex justify-center">
-                <svg className="h-6 w-6 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M12 6v12" />
-                  <path d="M6 13l6 6 6-6" />
-                </svg>
-              </span>
+              <span>Explore Architecture</span>
+              <svg className="h-4 w-4 animate-bounce mt-2 text-[#F2B94B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <path d="M12 6v12M6 13l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
           </main>
 
           <section
             id="content"
-            className={`w-full px-4 pb-20 md:px-8 snap-start transition duration-700 ease-out ${
-              contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-            }`}
+            className={`w-full px-6 py-40 md:px-12 transition duration-1000 ease-out border-t border-white/5 bg-gradient-to-b from-[#0B1020] to-[#05070F] pointer-events-auto ${contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
+              }`}
           >
-            <div className="mx-auto flex max-w-5xl flex-col items-center space-y-10 text-center">
-              <p className="text-xs uppercase tracking-[0.5em] text-[#F2B94B]/80">Cross-Chain Execution Kernel</p>
-              <h1 className="max-w-4xl text-3xl font-semibold leading-tight text-white md:text-5xl">
-                Autonomous intent orchestration with privacy-first policy checks and real-time cost telemetry.
-              </h1>
-              <p className="max-w-3xl text-base text-gray-300 md:text-lg">
-                Command agents that negotiate liquidity, honor budgets, and settle outcomes across Base, Arbitrum, Optimism, Polygon, and beyond.
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <a
-                  href={dashboardUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-3 rounded-full bg-[#F2B94B] px-10 py-4 text-sm font-bold uppercase tracking-[0.3em] text-[#0B1020] shadow-[0_0_30px_rgba(242,185,75,0.4)] transition hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#F2B94B]"
-                >
-                  Open Dashboard
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M5 12h14" />
-                    <path d="M14 5l7 7-7 7" />
-                  </svg>
-                </a>
-                <a
-                  href="https://github.com/hashpass-tech/JACK"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.4em] text-gray-300 transition hover:text-white"
-                >
-                  View Repo
-                </a>
+            <div className="mx-auto flex max-w-6xl flex-col items-center space-y-16">
+              <div className="text-center space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 mb-10">
+                <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white leading-[0.9]">
+                  Just-in-Time <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F2B94B] to-[#FFD16D]">Autonomous</span> <br />
+                  Cross-chain Kernel
+                </h1>
+                <p className="text-lg md:text-xl text-gray-400 font-medium tracking-tight max-w-2xl mx-auto leading-relaxed">
+                  Evolve past transaction-centric DeFi. Command agents that navigate liquidity, honor policies, and settle intents with provable integrity.
+                </p>
               </div>
-              <div className="grid w-full max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
+
+              <div className="text-center space-y-6">
+                <p className="text-[10px] font-black uppercase tracking-[0.8em] text-[#F2B94B]">Core Infrastructure</p>
+                <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">
+                  Policy-Constrained <br /> Private Execution (PCPE)
+                </h2>
+              </div>
+
+              <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-3">
                 {momentumMetrics.map((metric) => (
-                  <div key={metric.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-left text-sm">
-                    <p className="text-3xl font-semibold text-white">{metric.value}</p>
-                    <p className="text-xs uppercase tracking-[0.5em] text-gray-400">{metric.label}</p>
-                    <p className="text-[11px] text-gray-300">{metric.detail}</p>
+                  <div key={metric.label} className="rounded-3xl border border-white/5 bg-[#0F1A2E]/50 p-10 text-center space-y-4 hover:border-[#F2B94B]/30 transition-all group">
+                    <p className="text-5xl font-black text-white tracking-tighter group-hover:text-[#F2B94B] transition-colors">{metric.value}</p>
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500">{metric.label}</p>
+                      <p className="text-xs text-gray-400 font-medium">{metric.detail}</p>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
 
-            <div className="mx-auto mt-16 flex max-w-5xl flex-col space-y-6 text-left">
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-gray-500">Core Differentiators</p>
-                <h2 className="text-2xl font-semibold text-white md:text-3xl">Why teams build on JACK</h2>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-8 md:grid-cols-2 w-full pt-20">
                 {highlightTiles.map((tile) => (
                   <article
                     key={tile.title}
-                    className="space-y-3 rounded-3xl border border-white/5 bg-white/5 p-6 shadow-[0_25px_60px_rgba(0,0,0,0.4)] transition hover:border-white/30"
+                    className="relative group p-10 rounded-[32px] border border-white/5 bg-[#0F1A2E]/50 shadow-2xl overflow-hidden hover:border-white/20 transition-all"
                   >
-                    <span className={`${tile.accent} inline-flex w-fit items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.5em]`}>{tile.badge}</span>
-                    <h3 className="text-xl font-semibold text-white">{tile.title}</h3>
-                    <p className="text-sm text-gray-300">{tile.description}</p>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:bg-[#F2B94B]/5 transition-colors" />
+                    <div className="relative z-10 space-y-6">
+                      <span className={`${tile.accent} inline-flex items-center rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-[0.4em]`}>{tile.badge}</span>
+                      <h3 className="text-3xl font-black text-white tracking-tighter">{tile.title}</h3>
+                      <p className="text-gray-400 font-medium leading-relaxed">{tile.description}</p>
+                    </div>
                   </article>
                 ))}
               </div>
             </div>
           </section>
 
-          <footer className="relative mt-auto w-full px-4 pb-10 pt-6 text-center text-[10px] uppercase tracking-[0.5em] text-gray-500 snap-start md:px-6 md:pb-8 md:pt-4">
-            <p>Built for the future of cross-chain interoperability · Research by lukas.money</p>
-            <p className="mt-2 text-[9px] uppercase tracking-[0.35em] text-gray-400">
-              v{landingVersion}
-            </p>
+          <footer className="relative w-full px-6 py-20 bg-[#05070F] border-t border-white/5 text-center pointer-events-auto">
+            <div className="max-w-4xl mx-auto space-y-8">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 mx-auto border border-white/10">
+                <span className="font-space text-2xl font-black text-white">J</span>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.6em] text-gray-500">
+                v{landingVersion} · Built for the future of cross-chain interoperability · Research by Lukas.lat
+              </p>
+              <div className="flex justify-center space-x-10 text-[9px] font-black uppercase tracking-[0.4em] text-gray-600">
+                <a href="#" className="hover:text-white transition-colors">Twitter</a>
+                <a href="#" className="hover:text-white transition-colors">GitHub</a>
+                <a href="#" className="hover:text-white transition-colors">Discord</a>
+              </div>
+            </div>
           </footer>
 
           <button
             type="button"
-            aria-label="Back to top"
             onClick={scrollToTop}
-            className={`fixed right-4 bottom-4 md:right-6 md:bottom-6 flex items-center gap-2 rounded-full border border-white/30 bg-black/60 px-4 py-2 text-[10px] uppercase tracking-[0.4em] text-white shadow-[0_0_20px_rgba(0,0,0,0.4)] transition ${
-              contentVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            }`}
+            className={`fixed right-10 bottom-10 z-[100] p-4 rounded-2xl bg-[#F2B94B] text-[#0B1020] shadow-[0_10px_30px_rgba(242,185,75,0.3)] hover:scale-110 transition-all duration-500 pointer-events-auto ${contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
           >
-            <span>Back to top</span>
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M12 18V6" />
-              <path d="M5 11l7-7 7 7" />
+            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+              <path d="M12 18V6M5 11l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
       </div>
 
       {activeModalLayer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1020]/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-lg rounded-2xl border border-[#F2B94B]/40 bg-[#151C2E] p-6 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-[#0B1020]/90 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="relative w-full max-w-xl rounded-[32px] border border-[#F2B94B]/30 bg-[#0F1A2E] p-12 shadow-[0_0_100px_rgba(0,0,0,0.8)]">
             <button
               onClick={handleCloseModal}
-              className="absolute right-4 top-4 text-gray-400 transition hover:text-white"
+              className="absolute right-8 top-8 text-gray-500 hover:text-white transition-colors"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <div className="mb-6 h-1 w-16 rounded-full bg-gradient-to-r from-[#F2B94B] to-[#38BDF8]" />
-            <h2 className="text-2xl font-semibold uppercase tracking-[0.5em] text-white">{activeModalLayer} Layer</h2>
-            <p className="mt-4 text-sm text-gray-200">{layerExplanations[activeModalLayer]}</p>
-            <button
-              onClick={handleCloseModal}
-              className="mt-6 w-full rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-white transition hover:border-white/50"
-            >
-              Close Details
-            </button>
+            <div className="space-y-8">
+              <div className="w-16 h-1 w-full bg-gradient-to-r from-[#F2B94B] via-[#38BDF8] to-transparent rounded-full" />
+              <h2 className="text-4xl font-black uppercase tracking-tighter text-white">{activeModalLayer} Architecture</h2>
+              <p className="text-lg text-gray-300 font-medium leading-relaxed">{layerExplanations[activeModalLayer]}</p>
+              <button
+                onClick={handleCloseModal}
+                className="w-full py-5 rounded-2xl bg-white/5 text-white font-black uppercase tracking-[0.4em] border border-white/10 hover:bg-white/10 transition-all"
+              >
+                Return to Scene
+              </button>
+            </div>
           </div>
         </div>
       )}
-
-      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#0B1020] via-[#0F1A2E] to-[#05070F]" />
     </div>
   );
 };

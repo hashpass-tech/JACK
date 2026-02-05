@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type FC } from 'react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { CreateIntentView } from './CreateIntentView';
 import { ExecutionsListView } from './ExecutionsListView';
 import { ExecutionDetailView } from './ExecutionDetailView';
@@ -10,6 +11,7 @@ const Dashboard: FC = () => {
 	const [activeTab, setActiveTab] = useState<'create' | 'executions' | 'cost-dashboard'>('create');
 	const [selectedExecutionId, setSelectedExecutionId] = useState<string | null>(null);
 	const dashboardVersion = process.env.NEXT_PUBLIC_DASHBOARD_VERSION ?? '0.0.0';
+
 	const handleBack = () => {
 		if (typeof window !== 'undefined') {
 			window.history.back();
@@ -60,10 +62,6 @@ const Dashboard: FC = () => {
 							</h1>
 						</div>
 					</div>
-
-					<button className="md:hidden px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white rounded-lg text-xs border border-white/10 transition-all font-semibold">
-						Connect
-					</button>
 				</div>
 
 				<div className="flex items-center space-x-3 md:space-x-4 w-full md:w-auto overflow-x-auto no-scrollbar pb-1 md:pb-0">
@@ -87,9 +85,7 @@ const Dashboard: FC = () => {
 							Agent & Cost Dashboard
 						</button>
 					</div>
-					<button className="hidden md:block px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-sm border border-white/10 transition-all font-semibold whitespace-nowrap">
-						Connect Wallet
-					</button>
+					<ConnectButton />
 				</div>
 			</header>
 
