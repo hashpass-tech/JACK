@@ -1,3 +1,14 @@
+## [0.1.11](https://github.com/hashpass-tech/JACK/compare/v0.1.10...v0.1.11) (2026-02-05)
+
+
+### Bug Fixes
+
+* use bookworm base for Cloud Run ([ed0b7bf](https://github.com/hashpass-tech/JACK/commit/ed0b7bf341ac076ad951ed243f3e168bed46e973))
+
+
+
+
+
 ## [0.1.10](https://github.com/hashpass-tech/JACK/compare/v0.1.9-testnet.1...v0.1.10) (2026-02-05)
 
 
