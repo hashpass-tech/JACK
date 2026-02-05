@@ -24,6 +24,11 @@ On every release:
 4. Sync landing build to the configured GCS bucket.
 5. Deploy dashboard to Cloud Run.
 
+### Testnet vs Mainnet Version Enforcement
+- Testnet releases **require** `develop` to include the latest `main` history.
+- Production releases will **fast-forward** `develop` to `main` when possible.
+- If branches have diverged, the release will fail with instructions to merge manually.
+
 ## Testnet Dashboard (Cloud Build)
 Config file: `apps/dashboard/cloudbuild.testnet.yaml`
 

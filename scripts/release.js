@@ -57,6 +57,32 @@ const runWithOutput = (command) => {
   return execSync(command, { stdio: 'pipe', env: process.env }).toString().trim();
 };
 
+const tryFetchBranches = () => {
+  try {
+    execSync('git fetch origin main develop --tags', { stdio: 'ignore' });
+  } catch {
+    // ignore fetch errors (offline or no remote)
+  }
+};
+
+const branchExists = (branch) => {
+  try {
+    execSync(`git rev-parse --verify ${branch}`, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isAncestor = (ancestor, descendant) => {
+  try {
+    execSync(`git merge-base --is-ancestor ${ancestor} ${descendant}`, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const getBranchName = () => {
   if (process.env.GIT_BRANCH) {
     return process.env.GIT_BRANCH;
@@ -66,6 +92,16 @@ const getBranchName = () => {
   } catch {
     return '';
   }
+};
+
+const getPrimaryBranch = () => {
+  if (branchExists('main')) {
+    return 'main';
+  }
+  if (branchExists('master')) {
+    return 'master';
+  }
+  return '';
 };
 
 const tagExists = (tagName) => {
@@ -126,7 +162,47 @@ const createReleaseTag = (version) => {
   console.log(`Skipping tag creation for branch ${branch}`);
 };
 
+const enforceTestnetNotBehind = () => {
+  tryFetchBranches();
+  const primary = getPrimaryBranch();
+  const branch = getBranchName();
+
+  if (!primary || !branch) {
+    return;
+  }
+
+  if (branch === 'develop') {
+    if (!isAncestor(primary, branch)) {
+      throw new Error(`develop is behind ${primary}. Merge ${primary} into develop before running a testnet release.`);
+    }
+  }
+};
+
+const syncDevelopToPrimary = () => {
+  const primary = getPrimaryBranch();
+  if (!primary || !branchExists('develop')) {
+    return;
+  }
+
+  if (isAncestor(primary, 'develop')) {
+    return;
+  }
+
+  if (!isAncestor('develop', primary)) {
+    throw new Error(`develop has diverged from ${primary}. Merge ${primary} into develop manually to keep testnet in sync.`);
+  }
+
+  const currentBranch = getBranchName();
+  run('git checkout develop');
+  run(`git merge --ff-only ${primary}`);
+  run('git push origin develop');
+  if (currentBranch && currentBranch !== 'develop') {
+    run(`git checkout ${currentBranch}`);
+  }
+};
+
 try {
+  enforceTestnetNotBehind();
   console.log('Starting versioning + release pipeline');
   const versioningCommand = `pnpm exec versioning ${releaseLevel} --message "${releaseMessage}"`;
   run(versioningCommand);
@@ -213,6 +289,11 @@ try {
 
     run(`gcloud builds submit --region ${region} ${project} --config apps/dashboard/cloudbuild.yaml --substitutions=_IMAGE=${imageUri} .`);
     run(`gcloud run deploy ${process.env.GCLOUD_RUN_SERVICE} --image ${imageUri} --region ${region} ${project} ${allowUnauth}`);
+  }
+
+  const currentBranch = getBranchName();
+  if (currentBranch === 'main' || currentBranch === 'master') {
+    syncDevelopToPrimary();
   }
 
   console.log('Release pipeline completed successfully');
