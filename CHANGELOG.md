@@ -1,3 +1,14 @@
+## [0.1.8](https://github.com/hashpass-tech/JACK/compare/v0.1.7...v0.1.8) (2026-02-05)
+
+
+### Bug Fixes
+
+* cloud run port handling for dashboard ([6743b5d](https://github.com/hashpass-tech/JACK/commit/6743b5db2297c8d29d888bc3468c975964340558))
+
+
+
+
+
 ## [0.1.7](https://github.com/hashpass-tech/JACK/compare/v0.1.6...v0.1.7) (2026-02-05)
 
 

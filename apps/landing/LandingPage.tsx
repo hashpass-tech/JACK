@@ -152,7 +152,7 @@ const LandingPage: React.FC = () => {
         </Canvas>
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col pointer-events-none">
+      <div className="relative z-10 flex min-h-screen flex-col">
         <header className="pointer-events-auto absolute inset-x-0 top-0 flex items-center justify-between px-6 py-6 md:px-12">
           <div className="flex items-center space-x-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F2B94B] shadow-[0_0_25px_rgba(242,185,75,0.6)]">
@@ -199,10 +199,10 @@ const LandingPage: React.FC = () => {
           </nav>
         </header>
 
-          <div className="flex flex-1 flex-col scroll-smooth snap-y snap-mandatory">
+          <div className="flex flex-1 flex-col scroll-smooth snap-none md:snap-y md:snap-mandatory">
           <main
             id="hero"
-              className="pointer-events-none relative flex flex-1 min-h-screen items-center justify-center snap-start"
+              className="relative flex flex-1 min-h-screen items-center justify-center snap-start"
           >
               <a
                 href={dashboardUrl}
@@ -232,7 +232,7 @@ const LandingPage: React.FC = () => {
 
           <section
             id="content"
-            className={`pointer-events-auto w-full px-4 pb-20 md:px-8 snap-start transition duration-700 ease-out ${
+            className={`w-full px-4 pb-20 md:px-8 snap-start transition duration-700 ease-out ${
               contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
           >
@@ -297,7 +297,7 @@ const LandingPage: React.FC = () => {
             </div>
           </section>
 
-          <footer className="pointer-events-auto relative mt-auto w-full px-6 pb-8 pt-4 text-center text-[10px] uppercase tracking-[0.5em] text-gray-500 snap-start">
+          <footer className="relative mt-auto w-full px-4 pb-10 pt-6 text-center text-[10px] uppercase tracking-[0.5em] text-gray-500 snap-start md:px-6 md:pb-8 md:pt-4">
             <p>Built for the future of cross-chain interoperability · Research by lukas.money</p>
             <p className="mt-2 text-[9px] uppercase tracking-[0.35em] text-gray-400">
               v{landingVersion}
@@ -308,7 +308,7 @@ const LandingPage: React.FC = () => {
             type="button"
             aria-label="Back to top"
             onClick={scrollToTop}
-            className={`pointer-events-auto fixed right-6 bottom-6 flex items-center gap-2 rounded-full border border-white/30 bg-black/60 px-4 py-2 text-[10px] uppercase tracking-[0.4em] text-white shadow-[0_0_20px_rgba(0,0,0,0.4)] transition ${
+            className={`fixed right-4 bottom-4 md:right-6 md:bottom-6 flex items-center gap-2 rounded-full border border-white/30 bg-black/60 px-4 py-2 text-[10px] uppercase tracking-[0.4em] text-white shadow-[0_0_20px_rgba(0,0,0,0.4)] transition ${
               contentVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
             }`}
           >
