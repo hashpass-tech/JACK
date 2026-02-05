@@ -62,7 +62,14 @@ try {
       return;
     }
 
-    run(`gsutil -m rsync -r ${source} gs://${bucket}/${target}`);
+    run(`gsutil -m rsync -r -d ${source} gs://${bucket}/${target}`);
+  };
+
+  const setNoCache = ({ bucket, target }) => {
+    if (!bucket) {
+      return;
+    }
+    run(`gsutil setmeta -h "Cache-Control:no-cache, max-age=0" gs://${bucket}/${target}`);
   };
 
   if (process.env.GCLOUD_LANDING_BUCKET) {
@@ -75,6 +82,14 @@ try {
       bucket: process.env.GCLOUD_LANDING_BUCKET,
       source: 'apps/landing/dist',
       target: `${releaseToken}/landing`
+    });
+    setNoCache({
+      bucket: process.env.GCLOUD_LANDING_BUCKET,
+      target: 'index.html'
+    });
+    setNoCache({
+      bucket: process.env.GCLOUD_LANDING_BUCKET,
+      target: `${releaseToken}/landing/index.html`
     });
   }
 
