@@ -69,6 +69,7 @@ contract JACKPolicyHook is BaseHook {
     }
 
     function transferOwnership(address newOwner) external onlyOwner {
+        if (newOwner == address(0)) revert Unauthorized();
         owner = newOwner;
     }
 
