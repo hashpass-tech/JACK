@@ -55,6 +55,11 @@ contract JACKPolicyHookTest is Test {
         hook.transferOwnership(alice);
     }
 
+    function test_TransferOwnership_RevertsForZeroAddress() public {
+        vm.expectRevert(JACKPolicyHook.Unauthorized.selector);
+        hook.transferOwnership(address(0));
+    }
+
     function test_SetDelegatedUpdater() public {
         hook.setDelegatedUpdater(alice, true);
         assertTrue(hook.delegatedUpdaters(alice));
