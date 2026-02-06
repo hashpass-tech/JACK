@@ -1,3 +1,14 @@
+## [0.1.31](https://github.com/hashpass-tech/JACK/compare/v0.1.30-testnet.1...v0.1.31) (2026-02-06)
+
+
+### Performance Improvements
+
+* **landing:** mobile-first optimizations — lazy load, SW cache, video defer, 3D tuning ([1aef2f1](https://github.com/hashpass-tech/JACK/commit/1aef2f1f354ad54b4bef7e11748823aac2973935))
+
+
+
+
+
 ## [0.1.30](https://github.com/hashpass-tech/JACK/compare/v0.1.29...v0.1.30) (2026-02-06)
 
 
