@@ -79,6 +79,15 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
     }
   }, [entered, videoLoaded]);
 
+  /* Autoplay V3 when expanded and loaded */
+  useEffect(() => {
+    if (expanded && v3VideoLoaded && videoV3Ref.current) {
+      videoV3Ref.current.currentTime = 0;
+      videoV3Ref.current.muted = isMuted;
+      videoV3Ref.current.play().catch(() => {});
+    }
+  }, [expanded, v3VideoLoaded]);
+
   /* Close on ESC */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -104,17 +113,14 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
   const toggleExpand = () => {
     setExpanded((prev) => {
       const willExpand = !prev;
-      if (willExpand && videoV3Ref.current) {
-        // Switching to Theatre Mode — play V3 detailed video
-        videoV3Ref.current.currentTime = 0;
-        videoV3Ref.current.muted = isMuted;
-        videoV3Ref.current.play().catch(() => {});
+      if (willExpand) {
+        // Switching to Theatre Mode — pause V2, V3 will autoplay once mounted
         if (videoRef.current) videoRef.current.pause();
+        setV3VideoLoaded(false); // reset so we show shimmer while loading
       } else if (!willExpand && videoRef.current) {
         // Switching back to compact — resume V2 clip
         videoRef.current.muted = isMuted;
         videoRef.current.play().catch(() => {});
-        if (videoV3Ref.current) videoV3Ref.current.pause();
       }
       return willExpand;
     });
@@ -188,7 +194,7 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
               muted={isMuted}
               loop
               playsInline
-              preload="auto"
+              preload="metadata"
               onLoadedData={() => setVideoLoaded(true)}
               className="absolute inset-0 w-full h-full object-cover"
               style={{
@@ -198,8 +204,8 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
             />
           )}
 
-          {/* V3 detailed video — visible only in Theatre Mode */}
-          {videoSrcV3 && (
+          {/* V3 detailed video — only mount when expanded (saves ~4MB download per video) */}
+          {expanded && videoSrcV3 && (
             <video
               ref={videoV3Ref}
               src={videoSrcV3}
@@ -210,7 +216,7 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
               onLoadedData={() => setV3VideoLoaded(true)}
               className="absolute inset-0 w-full h-full object-cover"
               style={{
-                opacity: expanded && v3VideoLoaded ? 1 : 0,
+                opacity: v3VideoLoaded ? 1 : 0,
                 transition: "opacity 0.6s ease",
               }}
             />
