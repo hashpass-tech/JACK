@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 
 /* ─── Video mapping: Landing layer name → video file ─── */
 const LAYER_VIDEO_MAP: Record<string, string> = {
-  INTENT: "/videos/scene4-automation.webm",
+  INTENT: "/videos/scene1-key-management.webm",
   ROUTE: "/videos/scene2-multi-chain.webm",
-  CONSTRAINTS: "/videos/scene1-key-management.webm",
-  SETTLEMENT: "/videos/scene3-clearing.webm",
+  CONSTRAINTS: "/videos/scene3-clearing.webm",
+  SETTLEMENT: "/videos/scene4-automation.webm",
 };
 
 const LAYER_ACCENT: Record<string, string> = {
