@@ -56,21 +56,21 @@ This plan implements the JACK TypeScript SDK as a production-ready npm package w
     - _Requirements: 5.2, 5.3_
 
 - [~] 3. HTTP client with retry and caching
-  - [~] 3.1 Implement core HTTP client
+  - [x] 3.1 Implement core HTTP client
     - Create src/client.ts with JackClient class
     - Implement constructor with ClientConfig validation
     - Implement get() and post() methods with fetch API
     - Add timeout handling using AbortController
     - _Requirements: 13.1, 13.2, 13.4, 13.5_
   
-  - [~] 3.2 Implement retry logic with exponential backoff
+  - [x] 3.2 Implement retry logic with exponential backoff
     - Add executeWithRetry() private method
     - Implement retry logic for 5xx and network errors
     - Skip retry for 4xx errors
     - Track retry attempts and include in final error
     - _Requirements: 6.1, 6.2, 6.4, 6.5_
   
-  - [~] 3.3 Implement simple in-memory cache
+  - [x] 3.3 Implement simple in-memory cache
     - Create src/cache.ts with Cache class
     - Implement get/set with TTL support
     - Implement cache key generation from URL + params
@@ -78,7 +78,7 @@ This plan implements the JACK TypeScript SDK as a production-ready npm package w
     - Integrate cache into JackClient.get()
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
   
-  - [~] 3.4 Write unit tests for HTTP client
+  - [x] 3.4 Write unit tests for HTTP client
     - Test successful requests
     - Test timeout handling
     - Test custom headers (auth)
