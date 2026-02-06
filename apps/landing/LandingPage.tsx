@@ -454,16 +454,16 @@ const LandingPage: React.FC = () => {
             id="hero"
             className="relative flex flex-1 min-h-screen items-center justify-center pt-32 md:pt-20 pointer-events-none"
           >
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 z-20 mt-64 md:mt-24 pointer-events-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 z-20 mt-64 md:mt-[22rem] pointer-events-auto">
               <a
                 href={dashboardUrl}
-                className="w-full sm:w-auto px-10 md:px-12 py-4 md:py-5 bg-[#F2B94B] text-[#0B1020] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] rounded-xl md:rounded-2xl shadow-[0_20px_50px_rgba(242,185,75,0.3)] hover:scale-105 transition-all text-[10px] md:text-sm text-center"
+                className="w-full sm:w-auto px-8 md:px-8 py-3 md:py-3 bg-[#F2B94B] text-[#0B1020] font-black uppercase tracking-[0.1em] md:tracking-[0.15em] rounded-xl shadow-[0_12px_30px_rgba(242,185,75,0.25)] hover:scale-105 transition-all text-[10px] md:text-xs text-center"
               >
                 Enter the Kernel
               </a>
               <button
                 onClick={scrollToContent}
-                className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-white/5 text-white font-black uppercase tracking-[0.15em] md:tracking-[0.2em] rounded-xl md:rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-xs md:text-sm"
+                className="w-full sm:w-auto px-6 md:px-7 py-3 md:py-3 bg-white/5 text-white font-black uppercase tracking-[0.1em] md:tracking-[0.15em] rounded-xl border border-white/10 hover:bg-white/10 transition-all text-[10px] md:text-xs"
               >
                 Read Thesis
               </button>
