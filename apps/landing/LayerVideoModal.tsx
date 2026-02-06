@@ -138,7 +138,7 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
     <div
       ref={modalRef}
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:p-6"
+      className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6"
       style={{
         background: entered ? "rgba(11,16,32,0.92)" : "rgba(11,16,32,0)",
         backdropFilter: entered ? "blur(20px)" : "blur(0px)",
@@ -147,9 +147,10 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
     >
       {/* ── Card ── */}
       <div
-        className="relative w-full rounded-[28px] border overflow-hidden"
+        className="relative w-full rounded-t-[28px] sm:rounded-[28px] border border-b-0 sm:border-b overflow-hidden overflow-y-auto"
         style={{
           maxWidth: expanded ? "960px" : "540px",
+          maxHeight: "calc(100dvh - env(safe-area-inset-bottom, 0px))",
           background: "#0F1A2E",
           borderColor: `${accent}33`,
           boxShadow: entered
@@ -180,11 +181,12 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
 
         {/* ── Video area ── */}
         <div
-          className="relative cursor-pointer group"
+          className="relative cursor-pointer group flex-shrink-0"
           onClick={toggleExpand}
           style={{
-            height: expanded ? "540px" : "260px",
-            transition: "height 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            height: expanded ? "min(56vw, 540px)" : "min(52vw, 260px)",
+            minHeight: expanded ? "220px" : "160px",
+            transition: "height 0.5s cubic-bezier(0.16, 1, 0.3, 1), min-height 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
           {videoSrc && (
@@ -298,7 +300,7 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
 
         {/* ── Content area ── */}
         <div
-          className="px-8 pt-4 pb-8"
+          className="px-5 sm:px-8 pt-3 sm:pt-4 pb-6 sm:pb-8"
           style={{
             opacity: entered ? 1 : 0,
             transform: entered ? "translateY(0)" : "translateY(12px)",
@@ -307,7 +309,7 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
         >
           {/* Accent line */}
           <div
-            className="w-full h-[2px] rounded-full mb-6"
+            className="w-full h-[2px] rounded-full mb-4 sm:mb-6"
             style={{
               background: `linear-gradient(to right, ${accent}, ${accent}40, transparent)`,
             }}
@@ -320,12 +322,12 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
               style={{ background: accent, boxShadow: `0 0 8px ${accent}` }}
             />
             <h2
-              className="text-2xl md:text-3xl font-black uppercase tracking-tight"
+              className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight"
               style={{ color: "#fff" }}
             >
               {layer}
               <span
-                className="ml-2 text-sm font-bold tracking-widest opacity-60"
+                className="ml-2 text-xs sm:text-sm font-bold tracking-widest opacity-60"
                 style={{ color: accent }}
               >
                 Layer
@@ -334,7 +336,7 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
           </div>
 
           {/* Description */}
-          <p className="text-[15px] text-gray-300 font-medium leading-relaxed mb-6 max-w-lg">
+          <p className="text-[13px] sm:text-[15px] text-gray-300 font-medium leading-relaxed mb-4 sm:mb-6 max-w-lg">
             {description}
           </p>
 
@@ -342,7 +344,7 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <button
               onClick={handleClose}
-              className="flex-1 py-3.5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs border transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="flex-1 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs border transition-all hover:scale-[1.01] active:scale-[0.99]"
               style={{
                 background: "rgba(255,255,255,0.04)",
                 borderColor: "rgba(255,255,255,0.08)",
@@ -353,7 +355,7 @@ const LayerVideoModal: React.FC<LayerVideoModalProps> = ({
             </button>
             <button
               onClick={toggleExpand}
-              className="flex-1 py-3.5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="flex-1 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs transition-all hover:scale-[1.01] active:scale-[0.99]"
               style={{
                 background: `${accent}18`,
                 border: `1px solid ${accent}40`,
