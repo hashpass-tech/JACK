@@ -4,7 +4,8 @@
 
 # JACK - XChain Exec Kernel
 
-[![Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://github.com/hashpass-tech/jack/docs)
+[![Docs Deploy](https://github.com/hashpass-tech/jack/actions/workflows/deploy-docs-pages.yml/badge.svg)](https://github.com/hashpass-tech/jack/actions/workflows/deploy-docs-pages.yml)
+[![CI (Agent Tasks)](https://github.com/hashpass-tech/jack/actions/workflows/agent-ci.yml/badge.svg)](https://github.com/hashpass-tech/jack/actions/workflows/agent-ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
@@ -85,7 +86,6 @@ jack/
 ├── packages/
 │   └── sdk/               # TypeScript SDK
 ├── components/            # Shared React components
-└── docs/                  # Documentation
 ```
 
 ## Documentation
@@ -94,6 +94,7 @@ jack/
 - [Mission & Overview](./apps/docs/docs/overview.md)
 - [Architecture](./apps/docs/docs/architecture.md)
 - [Demo Narrative](./docs/demo-script.md)
+- [Contracts (Foundry)](./contracts/README.md)
 - [Contracts Deployment Runbook](./apps/docs/docs/operations/contracts-deployment.md)
 - [MVP Critical Roadmap](./apps/docs/docs/operations/mvp-critical-roadmap.md)
 
@@ -111,6 +112,9 @@ Supported commands:
 pnpm release        # patch release
 pnpm release:minor  # minor release
 pnpm release:major  # major release
+pnpm release:all        # patch release + docs deploy (landing/dashboard/docs)
+pnpm release:all:minor  # minor release + docs deploy
+pnpm release:all:major  # major release + docs deploy
 pnpm release -- --with-docs         # include docs build
 pnpm release -- --with-docs-deploy  # include docs build + trigger Pages deploy workflow
 pnpm release:docs                   # docs-only build
@@ -135,6 +139,8 @@ The script uses `gsutil -m rsync -r` to mirror the built artifacts into `gs://<b
 - GitHub Pages workflow: `.github/workflows/deploy-docs-pages.yml`
 - Docs custom domain file: `apps/docs/static/CNAME`
 - Cloud DNS helper: `scripts/gcloud/configure-docs-dns.sh`
+- Docs deploy runs: <https://github.com/hashpass-tech/jack/actions/workflows/deploy-docs-pages.yml>
+- Agent CI runs: <https://github.com/hashpass-tech/jack/actions/workflows/agent-ci.yml>
 
 Example DNS mapping command:
 

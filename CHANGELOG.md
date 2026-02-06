@@ -1,3 +1,138 @@
+## [0.1.34](https://github.com/hashpass-tech/JACK/compare/v0.1.33-testnet.1...v0.1.34) (2026-02-06)
+
+
+### Bug Fixes
+
+* **landing:** mobile-friendly layer video modal — bottom-sheet, responsive heights ([58d1c9b](https://github.com/hashpass-tech/JACK/commit/58d1c9bd7760b87c7a8b7df5397c4a096dbd7224))
+
+
+
+
+
+## [0.1.33](https://github.com/hashpass-tech/JACK/compare/v0.1.32-testnet.1...v0.1.33) (2026-02-06)
+
+
+
+
+
+## [0.1.32](https://github.com/hashpass-tech/JACK/compare/v0.1.31-testnet.1...v0.1.32) (2026-02-06)
+
+
+### Bug Fixes
+
+* **landing:** reduce hero CTA buttons size and push below JACK icon on desktop ([d2e3cd0](https://github.com/hashpass-tech/JACK/commit/d2e3cd065791976d2c7c880841176f950690bd7e))
+
+
+
+
+
+## [0.1.31](https://github.com/hashpass-tech/JACK/compare/v0.1.30-testnet.1...v0.1.31) (2026-02-06)
+
+
+### Performance Improvements
+
+* **landing:** mobile-first optimizations — lazy load, SW cache, video defer, 3D tuning ([1aef2f1](https://github.com/hashpass-tech/JACK/commit/1aef2f1f354ad54b4bef7e11748823aac2973935))
+
+
+
+
+
+## [0.1.30](https://github.com/hashpass-tech/JACK/compare/v0.1.29...v0.1.30) (2026-02-06)
+
+
+
+
+
+## [0.1.29](https://github.com/hashpass-tech/JACK/compare/v0.1.28...v0.1.29) (2026-02-06)
+
+
+### Features
+
+* **videos:** scene registry + unified render CLI — scalable multi-version video pipeline
+* **videos:** V3 deep dive detailed explainer videos (35s each, H.264 MP4)
+* **landing:** dual-mode modal — V2 compact clips + V3 Deep Dive on expand
+* **videos:** unified TTS generator (generate-tts-all.ts) reads from registry
+
+
+## [0.1.28](https://github.com/hashpass-tech/JACK/compare/v0.1.27-testnet.1...v0.1.28) (2026-02-06)
+
+
+### Features
+
+* **landing:** integrate V2 narrated videos + sound toggle ([c4a28bf](https://github.com/hashpass-tech/JACK/commit/c4a28bf08578385dca0d8f9f0e9ea4b5c81b6f8d))
+* **videos:** v2 TTS narration + SFX audio system ([c7d68c2](https://github.com/hashpass-tech/JACK/commit/c7d68c2ca73a95d203f452a2d7a24b2e81494acf))
+
+
+
+
+
+## [0.1.27](https://github.com/hashpass-tech/JACK/compare/v0.1.22...v0.1.27) (2026-02-06)
+
+
+### Bug Fixes
+
+* **landing:** correct layer→video mapping order ([a7a5b37](https://github.com/hashpass-tech/JACK/commit/a7a5b37476111bc7da866d891fc3aa992362dca1))
+* pass NEXT_PUBLIC_IS_TESTNET as build arg to Docker for Cloud Run testnet builds ([f01478c](https://github.com/hashpass-tech/JACK/commit/f01478c4ff4e5e999dfa1593f2e9fb20028db732))
+
+
+### Features
+
+* **contracts:** finalize JACKPolicyHook policy enforcement ([8e40f5f](https://github.com/hashpass-tech/JACK/commit/8e40f5f251a851be04dbc915a80e54288d087760))
+* **contracts:** implement JACK policy hook with slippage enforcement ([d701021](https://github.com/hashpass-tech/JACK/commit/d701021645a5ca3e74168bf6185e0884631cfa59))
+* **landing:** embed layer explainer videos in modal cards ([1961bbb](https://github.com/hashpass-tech/JACK/commit/1961bbb1201e1829ba1224fc3a538f591966dc97))
+* **videos:** premium 6-scene explainer rewrite ([cdb35a5](https://github.com/hashpass-tech/JACK/commit/cdb35a5eacc6d017316ae7221b6d65df1474a3c6))
+* **videos:** scaffold Remotion + R3F video generator app ([7d71577](https://github.com/hashpass-tech/JACK/commit/7d715777029933613f2b99142b6ed3549efdbece))
+
+
+
+
+
+## [0.1.26](https://github.com/hashpass-tech/JACK/compare/v0.1.25-testnet.1...v0.1.26) (2026-02-06)
+
+
+
+
+
+## [0.1.25](https://github.com/hashpass-tech/JACK/compare/v0.1.24-testnet.1...v0.1.25) (2026-02-06)
+
+
+### Bug Fixes
+
+* pass NEXT_PUBLIC_IS_TESTNET as build arg to Docker for Cloud Run testnet builds ([2d6699b](https://github.com/hashpass-tech/JACK/commit/2d6699be3ea36d63b11ea93dbbfa4e55bfe23f3a))
+
+
+
+
+
+## [0.1.24](https://github.com/hashpass-tech/JACK/compare/v0.1.23-testnet.1...v0.1.24) (2026-02-06)
+
+
+
+
+
+## [0.1.23](https://github.com/hashpass-tech/JACK/compare/v0.1.22...v0.1.23) (2026-02-06)
+
+
+
+
+
+## [0.1.22](https://github.com/hashpass-tech/JACK/compare/v0.1.21...v0.1.22) (2026-02-06)
+
+
+### Features
+
+* add testnet environment alert banner for dashboard ([0f47415](https://github.com/hashpass-tech/JACK/commit/0f474158c1eb29a38860556ef7153f88d6790940))
+
+
+
+
+
+## [0.1.21](https://github.com/hashpass-tech/JACK/compare/v0.1.20-testnet.1...v0.1.21) (2026-02-05)
+
+
+
+
+
 ## [0.1.20](https://github.com/hashpass-tech/JACK/compare/v0.1.19-testnet.1...v0.1.20) (2026-02-05)
 
 

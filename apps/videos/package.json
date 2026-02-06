@@ -1,0 +1,44 @@
+{
+  "name": "@jack/videos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JACK Protocol explainer videos — Remotion + React Three Fiber",
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+
+    "scenes": "tsx scripts/scene-registry.ts list",
+    "scenes:commands": "tsx scripts/scene-registry.ts commands",
+
+    "render:cli": "tsx scripts/render.ts",
+    "render:list": "tsx scripts/render.ts --list",
+    "render:v1": "tsx scripts/render.ts --version v1 --all",
+    "render:v2": "tsx scripts/render.ts --version v2 --all",
+    "render:v3": "tsx scripts/render.ts --version v3 --all",
+    "render:landing": "tsx scripts/render.ts --landing",
+    "render:deploy": "tsx scripts/render.ts --deploy",
+    "render:all": "tsx scripts/render.ts --version v1 --all && tsx scripts/render.ts --version v2 --all && tsx scripts/render.ts --version v3 --all",
+
+    "generate:tts": "tsx scripts/generate-tts-all.ts",
+    "generate:tts:v2": "tsx scripts/generate-tts-all.ts --version v2",
+    "generate:tts:v3": "tsx scripts/generate-tts-all.ts --version v3",
+    "generate:sfx": "tsx scripts/generate-sfx.ts",
+    "generate:audio": "pnpm generate:tts && pnpm generate:sfx"
+  },
+  "dependencies": {
+    "@react-three/fiber": "9.0.4",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.0",
+    "@remotion/three": "^4.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.0",
+    "three": "^0.175.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.27",
+    "@types/three": "^0.182.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.0"
+  }
+}
