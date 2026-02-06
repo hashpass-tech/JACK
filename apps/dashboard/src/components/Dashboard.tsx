@@ -137,13 +137,17 @@ const Dashboard: FC = () => {
 
       {isTestnet && (
         <div className="bg-[#F2B94B] text-[#0B1020] px-4 py-3 text-center font-semibold text-sm border-b border-[#F2B94B]/30">
-          ⚠️ TESTNET MODE - Using testnet networks. For mainnet, visit{" "}
-          <a 
-            href="https://testnet.jack.lukas.money/dashboard" 
+          ⚠️ TESTNET MODE - Using testnet networks. For mainnet, visit{' '}
+          <a
+            href="https://jack.lukas.money/dashboard"
             className="underline font-bold hover:opacity-80"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            testnet.jack.lukas.money/dashboard
+            jack.lukas.money/dashboard
           </a>
+          {" "}
+          <span className="block md:inline text-xs font-normal mt-1 md:mt-0 md:ml-2">(on mainnet launch Q3 2026)</span>
         </div>
       )}
 
