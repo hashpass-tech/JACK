@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState, lazy, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -7,7 +7,55 @@ import {
   Stars,
 } from "@react-three/drei";
 import Scene3D from "@/components/Scene3Dv2";
-import LayerVideoModal from "./LayerVideoModal";
+
+// Lazy load the video modal — only loaded when user clicks a layer
+const LayerVideoModal = lazy(() => import("./LayerVideoModal"));
+
+/* ── Elegant 3D loading skeleton ── */
+const Scene3DLoadingFallback: React.FC = () => (
+  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+    {/* Animated rings */}
+    <div className="relative w-40 h-40 md:w-56 md:h-56">
+      <div
+        className="absolute inset-0 rounded-full border border-[#F2B94B]/30"
+        style={{ animation: "pulse-ring 2s ease-out infinite" }}
+      />
+      <div
+        className="absolute inset-4 rounded-full border border-[#38BDF8]/20"
+        style={{ animation: "pulse-ring 2s ease-out 0.4s infinite" }}
+      />
+      <div
+        className="absolute inset-8 rounded-full border border-[#F2B94B]/15"
+        style={{ animation: "pulse-ring 2s ease-out 0.8s infinite" }}
+      />
+      {/* Center logo */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div
+          className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-[#F2B94B] flex items-center justify-center shadow-[0_0_40px_rgba(242,185,75,0.3)]"
+          style={{ animation: "fade-pulse 1.5s ease-in-out infinite" }}
+        >
+          <span className="font-space text-2xl md:text-3xl font-black text-[#0B1020]">J</span>
+        </div>
+      </div>
+    </div>
+    <p
+      className="mt-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.6em] text-gray-500"
+      style={{ animation: "fade-pulse 1.5s ease-in-out infinite" }}
+    >
+      Initializing Kernel…
+    </p>
+    <style>{`
+      @keyframes pulse-ring {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(1.3); opacity: 0; }
+      }
+      @keyframes fade-pulse {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+      }
+    `}</style>
+  </div>
+);
 
 const whitepaperVersions = [
   { label: "Latest (v1.0.1)", filename: "JACK-Whitepaper-v1.0.1.pdf" },
@@ -89,6 +137,16 @@ const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const whitepaperRef = useRef<HTMLDivElement | null>(null);
 
+  // Detect mobile for performance tuning
+  const isMobile = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  }, []);
+  // Lower DPR on mobile for much faster GPU rendering
+  const canvasDpr: [number, number] = isMobile ? [1, 1] : [1, 2];
+  // Reduce particles on mobile
+  const starCount = isMobile ? 2000 : 6000;
+
   useEffect(() => {
     const isTestnet = import.meta.env.VITE_IS_TESTNET === "true";
     if (isTestnet && typeof window !== "undefined") {
@@ -168,56 +226,59 @@ const LandingPage: React.FC = () => {
     <div className="relative w-full min-h-screen bg-[#0B1020] text-white font-space overflow-x-hidden">
       {/* 3D Core Layer */}
       <div className="fixed inset-0 z-0 h-screen overflow-hidden pointer-events-auto">
-        <Canvas
-          shadows
-          dpr={[1, 2]}
-          gl={{
-            antialias: true,
-            stencil: false,
-            depth: true,
-            powerPreference: "high-performance",
-          }}
-        >
-          <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
-          <color attach="background" args={["#0B1020"]} />
+        <Suspense fallback={<Scene3DLoadingFallback />}>
+          <Canvas
+            shadows={!isMobile}
+            dpr={canvasDpr}
+            gl={{
+              antialias: !isMobile,
+              stencil: false,
+              depth: true,
+              powerPreference: "high-performance",
+            }}
+            performance={{ min: 0.5 }}
+          >
+            <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
+            <color attach="background" args={["#0B1020"]} />
 
-          <Suspense fallback={null}>
-            <Scene3D
-              selectedLayer={selected3DLayer}
-              onSelect={setSelected3DLayer}
-              onViewDetails={(name) => setActiveModalLayer(name)}
+            <Suspense fallback={null}>
+              <Scene3D
+                selectedLayer={selected3DLayer}
+                onSelect={setSelected3DLayer}
+                onViewDetails={(name) => setActiveModalLayer(name)}
+              />
+              <Stars
+                radius={100}
+                depth={50}
+                count={starCount}
+                factor={4}
+                saturation={0}
+                fade
+                speed={1}
+              />
+              {!isMobile && <Environment preset="city" />}
+            </Suspense>
+
+            <ambientLight intensity={isMobile ? 0.6 : 0.4} />
+            <pointLight position={[10, 10, 10]} intensity={2} color="#F2B94B" />
+            <spotLight
+              position={[-5, 5, 5]}
+              angle={0.15}
+              penumbra={1}
+              intensity={3}
+              color="#38BDF8"
+              castShadow={!isMobile}
             />
-            <Stars
-              radius={100}
-              depth={50}
-              count={6000}
-              factor={4}
-              saturation={0}
-              fade
-              speed={1}
+
+            <OrbitControls
+              enableZoom={false}
+              maxPolarAngle={Math.PI / 2}
+              minPolarAngle={Math.PI / 3}
+              autoRotate
+              autoRotateSpeed={0.4}
             />
-            <Environment preset="city" />
-          </Suspense>
-
-          <ambientLight intensity={0.4} />
-          <pointLight position={[10, 10, 10]} intensity={2} color="#F2B94B" />
-          <spotLight
-            position={[-5, 5, 5]}
-            angle={0.15}
-            penumbra={1}
-            intensity={3}
-            color="#38BDF8"
-            castShadow
-          />
-
-          <OrbitControls
-            enableZoom={false}
-            maxPolarAngle={Math.PI / 2}
-            minPolarAngle={Math.PI / 3}
-            autoRotate
-            autoRotateSpeed={0.4}
-          />
-        </Canvas>
+          </Canvas>
+        </Suspense>
       </div>
 
       {/* Content Overlay */}
@@ -565,10 +626,12 @@ const LandingPage: React.FC = () => {
       </div>
 
       {activeModalLayer && (
-        <LayerVideoModal
-          layer={activeModalLayer}
-          onClose={handleCloseModal}
-        />
+        <Suspense fallback={null}>
+          <LayerVideoModal
+            layer={activeModalLayer}
+            onClose={handleCloseModal}
+          />
+        </Suspense>
       )}
     </div>
   );
