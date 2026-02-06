@@ -47,8 +47,23 @@ $ anvil
 
 ### Deploy
 
+From the repository root:
+
 ```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+$ cp contracts/.env.testnet.example contracts/.env.testnet
+$ ./scripts/contracts/deploy-hook.sh contracts/.env.testnet
+```
+
+Mainnet (hardened):
+
+```shell
+$ ./scripts/contracts/deploy-hook.sh contracts/.env.mainnet
+```
+
+Smoke checks (allow/reject evidence):
+
+```shell
+$ ./scripts/contracts/smoke-hook.sh contracts/.env.testnet
 ```
 
 ### Cast
@@ -64,3 +79,8 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+## Issue Tracking
+
+- D1-CRIT-A1 implementation is tracked in GitHub issue #1.
+- PRs for this work should include `Fixes #1` (or `Closes #1`) in the body to auto-link and close the issue on merge.
