@@ -63,7 +63,7 @@ const parseArgs = (argv) => {
   return options;
 };
 
-const normalizeVersion = (value) => value.replace(/^v/i, "").trim();
+const normalizeVersion = (value) => (value || "").replace(/^v/i, "").trim();
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, "utf8"));
 
@@ -182,6 +182,8 @@ const compileWithDocker = (sourceAbs, outputDirAbs) => {
 };
 
 const buildChangelogDoc = (manifest) => {
+  const latestVersion = normalizeVersion(manifest.latest);
+  const featuredVersion = normalizeVersion(manifest.featured || "");
   const lines = [
     "---",
     "title: Whitepaper Changelog",
@@ -195,8 +197,15 @@ const buildChangelogDoc = (manifest) => {
   ];
 
   for (const entry of manifest.versions) {
+    const version = normalizeVersion(entry.version);
     lines.push(`## v${entry.version} (${entry.releaseDate})`);
     lines.push("");
+    if (version === featuredVersion) {
+      lines.push("- Track: Foundational (recommended start here).");
+    }
+    if (version === latestVersion) {
+      lines.push("- Track: Latest technical specification.");
+    }
     lines.push(`- PDF: [/whitepaper/${entry.pdf}](/whitepaper/${entry.pdf})`);
     if (entry.markdown) {
       lines.push(
@@ -219,32 +228,49 @@ const syncManifestToPublicDirs = (manifest) => {
   }
 };
 
-const syncMarkdownCompanion = (manifest) => {
+const syncMarkdownCompanions = (manifest) => {
   const latestVersion = normalizeVersion(manifest.latest);
-  const latestEntry = manifest.versions.find(
-    (entry) => normalizeVersion(entry.version) === latestVersion,
-  );
+  const featuredVersion = normalizeVersion(manifest.featured || latestVersion);
+  const versionedTargets = [];
 
-  if (!latestEntry || !latestEntry.markdown) {
+  for (const entry of manifest.versions) {
+    if (!entry.markdown) {
+      continue;
+    }
+    const version = normalizeVersion(entry.version);
+    const source = path.join(ROOT, entry.markdown);
+    if (!fs.existsSync(source)) {
+      throw new Error(`Markdown companion not found: ${entry.markdown}`);
+    }
+    const versionedTarget = path.join(
+      DOCS_WHITEPAPER_DIR,
+      `whitepaper-v${version}.md`,
+    );
+    copyFile(source, versionedTarget);
+    versionedTargets.push(versionedTarget);
+  }
+
+  const summaryEntry =
+    manifest.versions.find(
+      (entry) =>
+        normalizeVersion(entry.version) === featuredVersion && entry.markdown,
+    ) ||
+    manifest.versions.find(
+      (entry) =>
+        normalizeVersion(entry.version) === latestVersion && entry.markdown,
+    );
+
+  if (!summaryEntry || !summaryEntry.markdown) {
     throw new Error(
-      "Manifest latest version must define a markdown companion.",
+      "Manifest must provide a markdown source for featured or latest version.",
     );
   }
 
-  const source = path.join(ROOT, latestEntry.markdown);
-  if (!fs.existsSync(source)) {
-    throw new Error(`Markdown companion not found: ${latestEntry.markdown}`);
-  }
-
-  const versionedTarget = path.join(
-    DOCS_WHITEPAPER_DIR,
-    `whitepaper-v${latestVersion}.md`,
-  );
+  const summarySource = path.join(ROOT, summaryEntry.markdown);
   const summaryTarget = path.join(DOCS_WHITEPAPER_DIR, "summary.md");
+  copyFile(summarySource, summaryTarget);
 
-  copyFile(source, versionedTarget);
-  copyFile(source, summaryTarget);
-  return { versionedTarget, summaryTarget };
+  return { versionedTargets, summaryTarget };
 };
 
 const main = () => {
@@ -285,38 +311,53 @@ const main = () => {
   }
 
   for (const entry of targets) {
-    const texPath = entry.tex;
-    if (!texPath) {
-      throw new Error(
-        `Manifest entry v${entry.version} is missing tex source.`,
-      );
-    }
-
-    const sourceAbs = path.join(ROOT, texPath);
-    if (!fs.existsSync(sourceAbs)) {
-      throw new Error(`TeX source not found: ${texPath}`);
-    }
-
-    const outputDirAbs = path.join(ROOT, "whitepaper", ".build", entry.version);
+    const version = normalizeVersion(entry.version);
+    const texPath =
+      typeof entry.tex === "string" && entry.tex.trim() ? entry.tex : "";
+    const sourcePdfPath =
+      typeof entry.sourcePdf === "string" && entry.sourcePdf.trim()
+        ? entry.sourcePdf
+        : "";
+    const outputDirAbs = path.join(ROOT, "whitepaper", ".build", version);
     fs.mkdirSync(outputDirAbs, { recursive: true });
 
-    if (!options.skipCompile) {
-      const compiledLocally = compileWithLocalTex(sourceAbs, outputDirAbs);
-      if (!compiledLocally) {
-        compileWithDocker(sourceAbs, outputDirAbs);
-      }
-    }
+    let builtPdfAbs = "";
 
-    const sourcePdfName = `${path.basename(sourceAbs, ".tex")}.pdf`;
-    let builtPdfAbs = path.join(outputDirAbs, sourcePdfName);
-
-    if (!fs.existsSync(builtPdfAbs) && options.skipCompile) {
-      const existingArtifact = OUTPUT_DIRS.map((relativeDir) =>
-        path.join(ROOT, relativeDir, entry.pdf),
-      ).find((candidate) => fs.existsSync(candidate));
-      if (existingArtifact) {
-        builtPdfAbs = existingArtifact;
+    if (texPath) {
+      const sourceAbs = path.join(ROOT, texPath);
+      if (!fs.existsSync(sourceAbs)) {
+        throw new Error(`TeX source not found: ${texPath}`);
       }
+
+      if (!options.skipCompile) {
+        const compiledLocally = compileWithLocalTex(sourceAbs, outputDirAbs);
+        if (!compiledLocally) {
+          compileWithDocker(sourceAbs, outputDirAbs);
+        }
+      }
+
+      const sourcePdfName = `${path.basename(sourceAbs, ".tex")}.pdf`;
+      builtPdfAbs = path.join(outputDirAbs, sourcePdfName);
+
+      if (!fs.existsSync(builtPdfAbs) && options.skipCompile) {
+        const existingArtifact = OUTPUT_DIRS.map((relativeDir) =>
+          path.join(ROOT, relativeDir, entry.pdf),
+        ).find((candidate) => fs.existsSync(candidate));
+        if (existingArtifact) {
+          builtPdfAbs = existingArtifact;
+        }
+      }
+    } else if (sourcePdfPath) {
+      builtPdfAbs = path.join(ROOT, sourcePdfPath);
+      if (!fs.existsSync(builtPdfAbs)) {
+        throw new Error(
+          `sourcePdf not found for v${entry.version}: ${sourcePdfPath}`,
+        );
+      }
+    } else {
+      throw new Error(
+        `Manifest entry v${entry.version} must define tex or sourcePdf.`,
+      );
     }
 
     if (!fs.existsSync(builtPdfAbs)) {
@@ -325,14 +366,16 @@ const main = () => {
       );
     }
 
+    const canonicalVersion = normalizeVersion(
+      manifest.featured || manifest.latest,
+    );
+
     for (const relativeDir of OUTPUT_DIRS) {
       const outputDir = path.join(ROOT, relativeDir);
       const versionedTarget = path.join(outputDir, entry.pdf);
       copyFile(builtPdfAbs, versionedTarget);
 
-      if (
-        normalizeVersion(entry.version) === normalizeVersion(manifest.latest)
-      ) {
+      if (normalizeVersion(entry.version) === canonicalVersion) {
         copyFile(builtPdfAbs, path.join(outputDir, manifest.canonicalPdf));
       }
     }
@@ -341,16 +384,18 @@ const main = () => {
   }
 
   syncManifestToPublicDirs(manifest);
-  const markdownPaths = syncMarkdownCompanion(manifest);
+  const markdownPaths = syncMarkdownCompanions(manifest);
   writeFile(
     path.join(DOCS_WHITEPAPER_DIR, "changelog.md"),
     buildChangelogDoc(manifest),
   );
 
   console.log("Synced whitepaper manifest to landing/docs public directories");
-  console.log(
-    `Synced markdown companion: ${path.relative(ROOT, markdownPaths.versionedTarget)}`,
-  );
+  for (const versionedTarget of markdownPaths.versionedTargets) {
+    console.log(
+      `Synced markdown companion: ${path.relative(ROOT, versionedTarget)}`,
+    );
+  }
   console.log(
     `Synced latest summary: ${path.relative(ROOT, markdownPaths.summaryTarget)}`,
   );

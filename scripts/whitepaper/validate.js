@@ -36,22 +36,46 @@ const main = () => {
   ensure(manifest.versions.length > 0, "Manifest versions cannot be empty");
 
   const latestVersion = normalizeVersion(manifest.latest);
+  const canonicalVersion = normalizeVersion(
+    manifest.featured || manifest.latest,
+  );
   const latestEntry = manifest.versions.find(
     (entry) => normalizeVersion(entry.version) === latestVersion,
   );
+  const canonicalEntry = manifest.versions.find(
+    (entry) => normalizeVersion(entry.version) === canonicalVersion,
+  );
 
   ensure(latestEntry, `Manifest latest version not found: ${manifest.latest}`);
+  ensure(
+    canonicalEntry,
+    `Manifest canonical version not found: ${canonicalVersion}`,
+  );
   ensure(manifest.canonicalPdf, "Manifest canonicalPdf is required");
 
   for (const entry of manifest.versions) {
     ensure(entry.version, "Each version entry requires version");
     ensure(entry.releaseDate, `Version v${entry.version} requires releaseDate`);
     ensure(entry.pdf, `Version v${entry.version} requires pdf`);
-    ensure(entry.tex, `Version v${entry.version} requires tex source`);
+    const texPath = typeof entry.tex === "string" ? entry.tex.trim() : "";
+    const sourcePdfPath =
+      typeof entry.sourcePdf === "string" ? entry.sourcePdf.trim() : "";
     ensure(
-      fs.existsSync(path.join(ROOT, entry.tex)),
-      `Missing TeX source for v${entry.version}: ${entry.tex}`,
+      texPath || sourcePdfPath,
+      `Version v${entry.version} must define tex or sourcePdf`,
     );
+    if (texPath) {
+      ensure(
+        fs.existsSync(path.join(ROOT, texPath)),
+        `Missing TeX source for v${entry.version}: ${texPath}`,
+      );
+    }
+    if (sourcePdfPath) {
+      ensure(
+        fs.existsSync(path.join(ROOT, sourcePdfPath)),
+        `Missing sourcePdf for v${entry.version}: ${sourcePdfPath}`,
+      );
+    }
 
     for (const outputDir of OUTPUT_DIRS) {
       const pdfPath = path.join(ROOT, outputDir, entry.pdf);
@@ -63,14 +87,18 @@ const main = () => {
   }
 
   for (const outputDir of OUTPUT_DIRS) {
-    const latestPdfPath = path.join(ROOT, outputDir, latestEntry.pdf);
+    const canonicalSourcePdfPath = path.join(
+      ROOT,
+      outputDir,
+      canonicalEntry.pdf,
+    );
     const canonicalPdfPath = path.join(ROOT, outputDir, manifest.canonicalPdf);
     ensure(
       fs.existsSync(canonicalPdfPath),
       `Missing canonical PDF: ${path.relative(ROOT, canonicalPdfPath)}`,
     );
     ensure(
-      hashFile(latestPdfPath) === hashFile(canonicalPdfPath),
+      hashFile(canonicalSourcePdfPath) === hashFile(canonicalPdfPath),
       `Canonical PDF is out of sync in ${outputDir}`,
     );
 
@@ -88,18 +116,24 @@ const main = () => {
     );
   }
 
-  const latestMarkdown = path.join(
-    ROOT,
-    "apps",
-    "docs",
-    "docs",
-    "whitepaper",
-    `whitepaper-v${latestVersion}.md`,
-  );
-  ensure(
-    fs.existsSync(latestMarkdown),
-    `Missing docs markdown companion: ${path.relative(ROOT, latestMarkdown)}`,
-  );
+  for (const entry of manifest.versions) {
+    if (!entry.markdown) {
+      continue;
+    }
+    const version = normalizeVersion(entry.version);
+    const versionedDocPath = path.join(
+      ROOT,
+      "apps",
+      "docs",
+      "docs",
+      "whitepaper",
+      `whitepaper-v${version}.md`,
+    );
+    ensure(
+      fs.existsSync(versionedDocPath),
+      `Missing docs markdown companion: ${path.relative(ROOT, versionedDocPath)}`,
+    );
+  }
 
   const latestSummary = path.join(
     ROOT,
