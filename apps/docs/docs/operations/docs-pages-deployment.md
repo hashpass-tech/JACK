@@ -38,7 +38,6 @@ DOCS_IMPACT_NOTE: <why docs are not required>
 ```
 
 `deploy-docs-pages.yml` also runs version sync and whitepaper validation before docs build, so root/dashboard versions, changelog entries, and whitepaper manifest/assets stay aligned.
-
 ## GitHub Repository Settings
 
 1. Open repository settings: `Settings -> Pages`.
