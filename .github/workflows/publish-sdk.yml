@@ -52,6 +52,6 @@ jobs:
         run: pnpm --filter @jack-kernel/sdk run test
 
       - name: Publish to npm
-        run: pnpm --filter @jack-kernel/sdk publish --access public
+        run: pnpm --filter @jack-kernel/sdk publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_KEY }}
