@@ -6,6 +6,7 @@ import { CreateIntentView } from "./CreateIntentView";
 import { ExecutionsListView } from "./ExecutionsListView";
 import { ExecutionDetailView } from "./ExecutionDetailView";
 import AgentCostDashboard from "./AgentCostDashboard";
+import NeuralBackground from "./NeuralBackground";
 import { ChangelogDrawer } from "@shared/drawer-changelog";
 
 const ThemeToggle: FC = () => {
@@ -338,8 +339,18 @@ const Dashboard: FC<{ changelog?: string }> = ({ changelog = "" }) => {
       </div>
 
       {/* ── Main Content ──────────────────────────────── */}
-      <main className="flex-1 overflow-y-auto p-4 md:p-8" style={{ background: "var(--bg-primary)" }}>
-        <div className="max-w-5xl mx-auto">{renderContent()}</div>
+      <main className="relative flex-1 overflow-y-auto" style={{ background: "var(--bg-primary)" }}>
+        <NeuralBackground
+          className="pointer-events-none absolute inset-0 z-0"
+          color="#38BDF8"
+          backgroundVariable="--bg-primary"
+          trailOpacity={0.12}
+          particleCount={460}
+          speed={0.85}
+        />
+        <div className="relative z-10 p-4 md:p-8">
+          <div className="max-w-5xl mx-auto">{renderContent()}</div>
+        </div>
       </main>
 
       {/* ── Testnet Modal ─────────────────────────────── */}
