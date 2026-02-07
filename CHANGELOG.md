@@ -1,3 +1,14 @@
+## [0.1.45](https://github.com/hashpass-tech/JACK/compare/v0.1.44...v0.1.45) (2026-02-07)
+
+
+### Features
+
+* **dashboard:** add neural background between top bar and footer ([b4de888](https://github.com/hashpass-tech/JACK/commit/b4de88812fa8852a5c3516001d3b0f95b25dd2a9))
+
+
+
+
+
 ## [0.1.44](https://github.com/hashpass-tech/JACK/compare/v0.1.43-testnet.1...v0.1.44) (2026-02-07)
 
 
