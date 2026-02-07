@@ -22,7 +22,12 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "Whitepaper",
       link: { type: "doc", id: "whitepaper/index" },
-      items: ["whitepaper/changelog", "whitepaper/summary"],
+      items: [
+        "whitepaper/summary",
+        "whitepaper/whitepaper-v1.0.2",
+        "whitepaper/whitepaper-v1.0.0",
+        "whitepaper/changelog",
+      ],
     },
     {
       type: "category",

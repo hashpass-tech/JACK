@@ -72,10 +72,12 @@ type WhitepaperVersionEntry = {
   version: string;
   releaseDate: string;
   pdf: string;
+  sourcePdf?: string;
 };
 
 type WhitepaperManifest = {
   latest: string;
+  featured?: string;
   canonicalPdf: string;
   publicPath?: string;
   legacyPublicPath?: string;
@@ -84,10 +86,16 @@ type WhitepaperManifest = {
 
 const DEFAULT_WHITEPAPER_MANIFEST: WhitepaperManifest = {
   latest: "1.0.2",
+  featured: "1.0.0",
   canonicalPdf: "JACK-Whitepaper.pdf",
   publicPath: "/whitepaper",
   legacyPublicPath: "/whitepapper",
   versions: [
+    {
+      version: "1.0.0",
+      releaseDate: "2026-02-07",
+      pdf: "JACK-Whitepaper-v1.0.0.pdf",
+    },
     {
       version: "1.0.2",
       releaseDate: "2026-02-07",
@@ -103,6 +111,20 @@ const DEFAULT_WHITEPAPER_MANIFEST: WhitepaperManifest = {
 
 const normalizeWhitepaperVersion = (value: string): string =>
   value.replace(/^v/i, "").trim();
+
+const compareSemverDesc = (a: string, b: string): number => {
+  const left = a.split(".").map((part) => Number(part));
+  const right = b.split(".").map((part) => Number(part));
+  const max = Math.max(left.length, right.length);
+  for (let index = 0; index < max; index += 1) {
+    const l = left[index] ?? 0;
+    const r = right[index] ?? 0;
+    if (l !== r) {
+      return r - l;
+    }
+  }
+  return 0;
+};
 
 const highlightTiles = [
   {
@@ -192,27 +214,75 @@ const LandingPage: React.FC = () => {
   const [whitepaperManifest, setWhitepaperManifest] =
     useState<WhitepaperManifest>(DEFAULT_WHITEPAPER_MANIFEST);
   const whitepaperRef = useRef<HTMLDivElement | null>(null);
-  const latestWhitepaperVersion = useMemo(
+  const featuredWhitepaperVersion = useMemo(
     () =>
       normalizeWhitepaperVersion(
-        whitepaperManifest.latest || DEFAULT_WHITEPAPER_MANIFEST.latest,
+        whitepaperManifest.featured ||
+          DEFAULT_WHITEPAPER_MANIFEST.featured ||
+          whitepaperManifest.latest,
       ),
-    [whitepaperManifest.latest],
+    [whitepaperManifest.featured, whitepaperManifest.latest],
   );
   const whitepaperBasePath =
     whitepaperManifest.publicPath || DEFAULT_WHITEPAPER_MANIFEST.publicPath;
   const whitepaperVersions = useMemo(() => {
+    const featured = normalizeWhitepaperVersion(
+      whitepaperManifest.featured ||
+        DEFAULT_WHITEPAPER_MANIFEST.featured ||
+        whitepaperManifest.latest,
+    );
     const latest = normalizeWhitepaperVersion(
       whitepaperManifest.latest || DEFAULT_WHITEPAPER_MANIFEST.latest,
     );
-    return whitepaperManifest.versions.map((entry) => {
-      const version = normalizeWhitepaperVersion(entry.version);
-      return {
-        label: version === latest ? `Latest (v${version})` : `v${version}`,
+    const ordered = [...whitepaperManifest.versions].sort((left, right) =>
+      compareSemverDesc(
+        normalizeWhitepaperVersion(left.version),
+        normalizeWhitepaperVersion(right.version),
+      ),
+    );
+    const versionsById = new Map(
+      ordered.map((entry) => [
+        normalizeWhitepaperVersion(entry.version),
+        entry,
+      ]),
+    );
+    const selected = new Set<string>();
+    const options: Array<{
+      label: string;
+      filename: string;
+      isFeatured: boolean;
+      isLatest: boolean;
+    }> = [];
+
+    const appendOption = (version: string, label: string) => {
+      const entry = versionsById.get(version);
+      if (!entry || selected.has(version)) {
+        return;
+      }
+      selected.add(version);
+      options.push({
+        label,
         filename: entry.pdf,
-      };
-    });
-  }, [whitepaperManifest.latest, whitepaperManifest.versions]);
+        isFeatured: version === featured,
+        isLatest: version === latest,
+      });
+    };
+
+    appendOption(featured, `Start Here · Foundational (v${featured})`);
+    if (latest !== featured) {
+      appendOption(latest, `Latest Technical (v${latest})`);
+    }
+    for (const entry of ordered) {
+      const version = normalizeWhitepaperVersion(entry.version);
+      appendOption(version, `v${version}`);
+    }
+
+    return options;
+  }, [
+    whitepaperManifest.featured,
+    whitepaperManifest.latest,
+    whitepaperManifest.versions,
+  ]);
 
   // Detect mobile for performance tuning
   const isMobile = useMemo(() => {
@@ -436,7 +506,7 @@ const LandingPage: React.FC = () => {
                   setWhitepaperOpen((prev) => !prev);
                 }}
               >
-                {`Whitepaper (v${latestWhitepaperVersion})`}
+                {`Whitepaper (Start v${featuredWhitepaperVersion})`}
                 <svg
                   className="h-3 w-3 stroke-current"
                   viewBox="0 0 24 24"
@@ -451,14 +521,14 @@ const LandingPage: React.FC = () => {
                 </svg>
               </button>
               <div
-                className={`absolute right-0 mt-4 w-64 rounded-2xl border border-white/10 bg-[#0F1A2E]/95 px-6 py-5 text-left shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all duration-300 ${
+                className={`absolute right-0 mt-4 w-80 rounded-2xl border border-white/10 bg-[#0F1A2E]/95 px-6 py-5 text-left shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all duration-300 ${
                   whitepaperOpen
                     ? "visible opacity-100 translate-y-0"
                     : "invisible opacity-0 -translate-y-2"
                 }`}
               >
                 <p className="text-[8px] font-black uppercase tracking-[0.5em] text-[#F2B94B] mb-4">
-                  Select Specification
+                  Whitepaper Downloads
                 </p>
                 <div className="space-y-2">
                   {whitepaperVersions.map((paper) => (
@@ -467,7 +537,13 @@ const LandingPage: React.FC = () => {
                       href={`${whitepaperBasePath}/${paper.filename}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="block rounded-xl border border-white/5 bg-white/5 px-4 py-3 text-[10px] font-bold text-white transition hover:border-[#F2B94B]/50 hover:bg-[#F2B94B]/10 uppercase tracking-widest"
+                      className={`block rounded-xl border px-4 py-3 text-[10px] font-bold text-white transition uppercase tracking-widest ${
+                        paper.isFeatured
+                          ? "border-[#F2B94B]/50 bg-[#F2B94B]/15 text-[#FFE19A]"
+                          : paper.isLatest
+                            ? "border-[#38BDF8]/40 bg-[#38BDF8]/10 text-[#AEE7FF]"
+                            : "border-white/5 bg-white/5 hover:border-[#F2B94B]/50 hover:bg-[#F2B94B]/10"
+                      }`}
                     >
                       {paper.label}
                     </a>
@@ -537,14 +613,20 @@ const LandingPage: React.FC = () => {
 
             <div className="flex flex-col items-center space-y-8">
               <p className="text-gray-500 text-[10px] tracking-[0.6em] border-b border-white/10 pb-2">
-                Whitepaper Specs
+                Whitepaper Downloads
               </p>
               <div className="flex flex-col space-y-4">
                 {whitepaperVersions.map((p) => (
                   <a
                     key={p.filename}
                     href={`${whitepaperBasePath}/${p.filename}`}
-                    className="px-10 py-4 bg-white/5 border border-white/10 rounded-2xl text-[#F2B94B] text-[10px] text-center w-64 uppercase tracking-widest font-bold hover:bg-[#F2B94B]/10 transition-colors"
+                    className={`px-10 py-4 border rounded-2xl text-[10px] text-center w-72 uppercase tracking-widest font-bold transition-colors ${
+                      p.isFeatured
+                        ? "bg-[#F2B94B]/15 border-[#F2B94B]/50 text-[#FFE19A]"
+                        : p.isLatest
+                          ? "bg-[#38BDF8]/10 border-[#38BDF8]/40 text-[#AEE7FF]"
+                          : "bg-white/5 border-white/10 text-[#F2B94B] hover:bg-[#F2B94B]/10"
+                    }`}
                     target="_blank"
                     rel="noreferrer"
                     onClick={() => setMobileMenuOpen(false)}

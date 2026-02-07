@@ -6,10 +6,12 @@ type WhitepaperVersion = {
   pdf: string;
   markdown?: string;
   changelog?: string[];
+  sourcePdf?: string;
 };
 
 type WhitepaperManifest = {
   latest: string;
+  featured?: string;
   canonicalPdf: string;
   publicPath?: string;
   legacyPublicPath?: string;
@@ -18,10 +20,19 @@ type WhitepaperManifest = {
 
 const FALLBACK_MANIFEST: WhitepaperManifest = {
   latest: "1.0.2",
+  featured: "1.0.0",
   canonicalPdf: "JACK-Whitepaper.pdf",
   publicPath: "/whitepaper",
   legacyPublicPath: "/whitepapper",
   versions: [
+    {
+      version: "1.0.0",
+      releaseDate: "2026-02-07",
+      pdf: "JACK-Whitepaper-v1.0.0.pdf",
+      changelog: [
+        "Foundational whitepaper edition, optimized as the primary onboarding read.",
+      ],
+    },
     {
       version: "1.0.2",
       releaseDate: "2026-02-07",
@@ -42,6 +53,20 @@ const FALLBACK_MANIFEST: WhitepaperManifest = {
 
 const normalizeVersion = (value: string): string =>
   value.replace(/^v/i, "").trim();
+
+const compareSemverDesc = (left: string, right: string): number => {
+  const a = left.split(".").map((part) => Number(part));
+  const b = right.split(".").map((part) => Number(part));
+  const max = Math.max(a.length, b.length);
+  for (let index = 0; index < max; index += 1) {
+    const l = a[index] ?? 0;
+    const r = b[index] ?? 0;
+    if (l !== r) {
+      return r - l;
+    }
+  }
+  return 0;
+};
 
 const WhitepaperHub: React.FC = () => {
   const [manifest, setManifest] =
@@ -80,7 +105,7 @@ const WhitepaperHub: React.FC = () => {
       }
     };
 
-    load();
+    void load();
     return () => {
       active = false;
     };
@@ -90,21 +115,50 @@ const WhitepaperHub: React.FC = () => {
     () => normalizeVersion(manifest.latest || FALLBACK_MANIFEST.latest),
     [manifest.latest],
   );
+  const featuredVersion = useMemo(
+    () => normalizeVersion(manifest.featured || latestVersion),
+    [manifest.featured, latestVersion],
+  );
+
+  const sortedVersions = useMemo(
+    () =>
+      [...manifest.versions].sort((left, right) =>
+        compareSemverDesc(
+          normalizeVersion(left.version),
+          normalizeVersion(right.version),
+        ),
+      ),
+    [manifest.versions],
+  );
+
+  const featuredEntry = useMemo(
+    () =>
+      manifest.versions.find(
+        (entry) => normalizeVersion(entry.version) === featuredVersion,
+      ) || sortedVersions[0],
+    [featuredVersion, manifest.versions, sortedVersions],
+  );
 
   const latestEntry = useMemo(
     () =>
       manifest.versions.find(
         (entry) => normalizeVersion(entry.version) === latestVersion,
-      ) || manifest.versions[0],
-    [latestVersion, manifest.versions],
+      ) || sortedVersions[0],
+    [latestVersion, manifest.versions, sortedVersions],
   );
 
-  const archive = useMemo(
+  const versionLibrary = useMemo(
     () =>
-      manifest.versions.filter(
-        (entry) => normalizeVersion(entry.version) !== latestVersion,
-      ),
-    [latestVersion, manifest.versions],
+      sortedVersions.map((entry) => {
+        const version = normalizeVersion(entry.version);
+        return {
+          ...entry,
+          version,
+          isFeatured: version === featuredVersion,
+          isLatest: version === latestVersion,
+        };
+      }),
+    [featuredVersion, latestVersion, sortedVersions],
   );
 
   const basePath = manifest.publicPath || "/whitepaper";
@@ -121,36 +175,53 @@ const WhitepaperHub: React.FC = () => {
         </p>
       ) : null}
 
-      <h2>Latest Release: v{latestVersion}</h2>
+      <h2>Start Here: Foundational Whitepaper (v{featuredVersion})</h2>
       <p>
-        Release date: <strong>{latestEntry?.releaseDate || "n/a"}</strong>
+        This is the recommended first read for onboarding and product
+        orientation before jumping to deeper technical revisions.
       </p>
-
       <p>
+        <a
+          href={`${basePath}/${featuredEntry?.pdf}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Download Foundational PDF
+        </a>
+        {" · "}
         <a
           href={`${basePath}/${manifest.canonicalPdf}`}
           target="_blank"
           rel="noreferrer"
         >
-          Download Latest (Canonical)
+          Download Main Canonical Link
         </a>
-        {" · "}
+      </p>
+
+      <h2>Latest Technical Whitepaper (v{latestVersion})</h2>
+      <p>
+        Use this version for the newest architecture, integration updates, and
+        technical process details.
+      </p>
+      <p>
         <a
           href={`${basePath}/${latestEntry?.pdf}`}
           target="_blank"
           rel="noreferrer"
         >
-          Download Versioned PDF
+          Download Latest Technical PDF
         </a>
         {" · "}
-        <a href="/docs/whitepaper/summary">Read Simplified Markdown</a>
+        <a href={`/docs/whitepaper/whitepaper-v${latestVersion}`}>
+          Read Latest Technical Markdown
+        </a>
         {" · "}
         <a href="/docs/whitepaper/changelog">View Changelog</a>
       </p>
 
       <iframe
-        title={`JACK Whitepaper v${latestVersion}`}
-        src={`${basePath}/${latestEntry?.pdf}`}
+        title={`JACK Whitepaper Foundational v${featuredVersion}`}
+        src={`${basePath}/${featuredEntry?.pdf}`}
         style={{
           width: "100%",
           height: "75vh",
@@ -160,28 +231,19 @@ const WhitepaperHub: React.FC = () => {
         }}
       />
 
-      {latestEntry?.changelog?.length ? (
-        <>
-          <h3>Highlights in v{latestVersion}</h3>
-          <ul>
-            {latestEntry.changelog.map((note) => (
-              <li key={note}>{note}</li>
-            ))}
-          </ul>
-        </>
-      ) : null}
-
-      <h3>Archive Downloads</h3>
+      <h3>Version Library</h3>
       <ul>
-        {archive.map((entry) => (
+        {versionLibrary.map((entry) => (
           <li key={entry.version}>
             <a
               href={`${basePath}/${entry.pdf}`}
               target="_blank"
               rel="noreferrer"
             >
-              v{normalizeVersion(entry.version)} ({entry.releaseDate})
+              v{entry.version} ({entry.releaseDate})
             </a>
+            {entry.isFeatured ? " · Foundational / Start Here" : ""}
+            {entry.isLatest ? " · Latest Technical" : ""}
           </li>
         ))}
       </ul>
