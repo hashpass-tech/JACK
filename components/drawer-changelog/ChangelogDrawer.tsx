@@ -7,10 +7,16 @@
  *  2. **Full**  – near-full-screen paginated list of all releases
  *                 with GitHub tag links.
  *
+ *  IMPORTANT: This component uses INLINE STYLES for all layout,
+ *  NOT Tailwind utilities. The drawer is portal-mounted on
+ *  document.body across three different apps (Vite/CDN Tailwind,
+ *  Next.js/Tailwind v4, Docusaurus/no Tailwind) so utility
+ *  classes cannot be guaranteed available in every context.
+ *
  *  Usage:
  *    <ChangelogDrawer
  *      changelogText={rawMarkdown}
- *      theme="landing"       // or "dashboard" or custom ChangelogTheme
+ *      theme="landing"       // or "dashboard" | "docs" | custom
  *      version="0.1.36"
  *    />
  *
@@ -76,13 +82,25 @@ const VersionCard: React.FC<{
   >
     {/* Header: version badge + date + GitHub link */}
     <div
-      className="flex items-center justify-between flex-wrap gap-2"
-      style={{ marginBottom: "10px" }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: "8px",
+        marginBottom: "10px",
+      }}
     >
-      <div className="flex items-center gap-2">
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <span
-          className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold tracking-wide"
           style={{
+            display: "inline-flex",
+            alignItems: "center",
+            borderRadius: "6px",
+            padding: "2px 8px",
+            fontSize: "11px",
+            fontWeight: 700,
+            letterSpacing: "0.05em",
             background: theme.badgeBg,
             color: theme.badgeText,
             border: `1px solid ${theme.badgeBorder}`,
@@ -90,7 +108,7 @@ const VersionCard: React.FC<{
         >
           v{entry.version}
         </span>
-        <span className="text-[10px]" style={{ color: theme.textMuted }}>
+        <span style={{ fontSize: "10px", color: theme.textMuted }}>
           {formatDate(entry.date)}
         </span>
       </div>
@@ -98,8 +116,17 @@ const VersionCard: React.FC<{
         href={`${repoUrl}/releases/tag/v${entry.version}`}
         target="_blank"
         rel="noreferrer"
-        className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider transition-opacity hover:opacity-70"
         style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "4px",
+          borderRadius: "6px",
+          padding: "2px 8px",
+          fontSize: "9px",
+          fontWeight: 700,
+          textTransform: "uppercase" as const,
+          letterSpacing: "0.08em",
+          textDecoration: "none",
           color: theme.accent,
           border: `1px solid ${theme.badgeBorder}`,
           background: theme.badgeBg,
@@ -131,20 +158,35 @@ const VersionCard: React.FC<{
           }}
         >
           <div
-            className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em]"
-            style={{ color: theme.textMuted, marginBottom: "5px" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              fontSize: "9px",
+              fontWeight: 900,
+              textTransform: "uppercase" as const,
+              letterSpacing: "0.2em",
+              color: theme.textMuted,
+              marginBottom: "5px",
+            }}
           >
             <span style={{ color: theme.accent, fontSize: "8px" }}>
               {meta.icon}
             </span>
             {meta.label}
           </div>
-          <div className="flex flex-col gap-0.5">
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
             {section.items.map((item, ii) => (
               <div
                 key={ii}
-                className="flex items-start gap-2 text-[11px] leading-relaxed"
-                style={{ color: theme.textSecondary }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "8px",
+                  fontSize: "11px",
+                  lineHeight: 1.6,
+                  color: theme.textSecondary,
+                }}
               >
                 <span
                   style={{
@@ -159,8 +201,7 @@ const VersionCard: React.FC<{
                 <span>
                   {item.scope && (
                     <span
-                      className="font-semibold"
-                      style={{ color: theme.textPrimary }}
+                      style={{ fontWeight: 600, color: theme.textPrimary }}
                     >
                       {item.scope}:{" "}
                     </span>
@@ -171,8 +212,13 @@ const VersionCard: React.FC<{
                       href={item.commitUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="ml-1.5 font-mono text-[9px] transition-opacity hover:opacity-70"
-                      style={{ color: theme.accent }}
+                      style={{
+                        marginLeft: "6px",
+                        fontFamily: "monospace",
+                        fontSize: "9px",
+                        color: theme.accent,
+                        textDecoration: "none",
+                      }}
                     >
                       {item.commitHash.slice(0, 7)}
                     </a>
@@ -204,12 +250,11 @@ const Pagination: React.FC<{
   };
 
   return (
-    <div className="flex items-center justify-center gap-1 py-3">
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", padding: "12px 0" }}>
       <button
         onClick={() => goTo(Math.max(0, page - 1))}
         disabled={page === 0}
-        className="rounded-md p-1.5 transition-opacity disabled:opacity-25 cursor-pointer disabled:cursor-default"
-        style={{ color: theme.textSecondary }}
+        style={{ borderRadius: "6px", padding: "6px", cursor: page === 0 ? "default" : "pointer", opacity: page === 0 ? 0.25 : 1, color: theme.textSecondary, background: "none", border: "none" }}
       >
         <svg
           width="14"
@@ -227,14 +272,15 @@ const Pagination: React.FC<{
         <button
           key={i}
           onClick={() => goTo(i)}
-          className="rounded-md px-2.5 py-1 text-[10px] font-bold transition-all cursor-pointer"
           style={{
+            borderRadius: "6px",
+            padding: "4px 10px",
+            fontSize: "10px",
+            fontWeight: 700,
+            cursor: "pointer",
             background: i === page ? theme.badgeBg : "transparent",
             color: i === page ? theme.badgeText : theme.textMuted,
-            border:
-              i === page
-                ? `1px solid ${theme.badgeBorder}`
-                : "1px solid transparent",
+            border: i === page ? `1px solid ${theme.badgeBorder}` : "1px solid transparent",
           }}
         >
           {i + 1}
@@ -244,8 +290,7 @@ const Pagination: React.FC<{
       <button
         onClick={() => goTo(Math.min(totalPages - 1, page + 1))}
         disabled={page === totalPages - 1}
-        className="rounded-md p-1.5 transition-opacity disabled:opacity-25 cursor-pointer disabled:cursor-default"
-        style={{ color: theme.textSecondary }}
+        style={{ borderRadius: "6px", padding: "6px", cursor: page === totalPages - 1 ? "default" : "pointer", opacity: page === totalPages - 1 ? 0.25 : 1, color: theme.textSecondary, background: "none", border: "none" }}
       >
         <svg
           width="14"
@@ -358,8 +403,20 @@ export default function ChangelogDrawer({
     <button
       type="button"
       onClick={handleTriggerClick}
-      className={`group inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] transition-all duration-300 cursor-pointer select-none ${className}`}
+      className={className}
       style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "8px",
+        borderRadius: "999px",
+        padding: "6px 12px",
+        fontSize: "10px",
+        fontWeight: 700,
+        textTransform: "uppercase" as const,
+        letterSpacing: "0.18em",
+        cursor: "pointer",
+        userSelect: "none" as const,
+        transition: "all 300ms ease",
         background: theme.triggerBg,
         border: `1px solid ${theme.triggerBorder}`,
         color: theme.triggerText,
@@ -374,17 +431,21 @@ export default function ChangelogDrawer({
       }}
     >
       {/* Pulsing dot */}
-      <span className="relative flex h-2 w-2">
+      <span style={{ position: "relative", display: "flex", width: "8px", height: "8px" }}>
         <span
-          className="absolute inline-flex h-full w-full rounded-full opacity-75"
           style={{
+            position: "absolute",
+            display: "inline-flex",
+            width: "100%",
+            height: "100%",
+            borderRadius: "999px",
+            opacity: 0.75,
             background: theme.accent,
             animation: "cl-ping 1.5s cubic-bezier(0,0,0.2,1) infinite",
           }}
         />
         <span
-          className="relative inline-flex h-2 w-2 rounded-full"
-          style={{ background: theme.accent }}
+          style={{ position: "relative", display: "inline-flex", width: "8px", height: "8px", borderRadius: "999px", background: theme.accent }}
         />
       </span>
 
@@ -406,8 +467,16 @@ export default function ChangelogDrawer({
   /* ── Drawer portal ─────────────────────────────────────── */
   const drawer = (
     <div
-      className="fixed inset-0 z-[9999] flex items-end justify-center"
       style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 99999,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
         background: visible ? theme.overlay : "transparent",
         transition: "background 300ms ease",
         pointerEvents: visible ? "auto" : "none",
@@ -425,8 +494,11 @@ export default function ChangelogDrawer({
 
       {/* ── Sheet ─────────────────────────────────────────── */}
       <div
-        className="relative w-full flex flex-col"
         style={{
+          position: "relative",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
           maxWidth: isPeek ? "480px" : "640px",
           maxHeight: isPeek ? "50vh" : "85vh",
           background: theme.drawerBg,
@@ -440,29 +512,43 @@ export default function ChangelogDrawer({
         }}
       >
         {/* Drag handle */}
-        <div className="flex justify-center pt-3 pb-1">
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: "12px", paddingBottom: "4px" }}>
           <div
-            className="h-1 w-10 rounded-full"
-            style={{ background: theme.divider }}
+            style={{ height: "4px", width: "40px", borderRadius: "999px", background: theme.divider }}
           />
         </div>
 
         {/* ── Header ──────────────────────────────────────── */}
         <div
-          className="flex items-center justify-between px-5 pb-3"
-          style={{ borderBottom: `1px solid ${theme.divider}` }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 20px 12px",
+            borderBottom: `1px solid ${theme.divider}`,
+          }}
         >
-          <div className="flex items-center gap-3">
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <h2
-              className="text-sm font-bold tracking-wide"
-              style={{ color: theme.textPrimary }}
+              style={{
+                margin: 0,
+                fontSize: "14px",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                color: theme.textPrimary,
+              }}
             >
               {isPeek ? "What's New" : "Changelog"}
             </h2>
             {!isPeek && (
               <span
-                className="text-[9px] font-bold uppercase tracking-wider"
-                style={{ color: theme.textMuted }}
+                style={{
+                  fontSize: "9px",
+                  fontWeight: 700,
+                  textTransform: "uppercase" as const,
+                  letterSpacing: "0.1em",
+                  color: theme.textMuted,
+                }}
               >
                 {entries.length} release{entries.length !== 1 ? "s" : ""}
               </span>
@@ -470,8 +556,15 @@ export default function ChangelogDrawer({
           </div>
           <button
             onClick={close}
-            className="rounded-lg p-2 transition-colors cursor-pointer"
-            style={{ color: theme.textMuted }}
+            style={{
+              borderRadius: "8px",
+              padding: "8px",
+              cursor: "pointer",
+              color: theme.textMuted,
+              background: "transparent",
+              border: "none",
+              transition: "color 200ms ease",
+            }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = theme.textPrimary;
               e.currentTarget.style.background = theme.sectionBg;
@@ -497,8 +590,10 @@ export default function ChangelogDrawer({
         {/* ── Scrollable content ──────────────────────────── */}
         <div
           ref={scrollRef}
-          className="flex-1 overflow-y-auto px-5"
           style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "0 20px",
             scrollbarWidth: "thin",
             scrollbarColor: `${theme.scrollbarThumb} ${theme.scrollbarTrack}`,
           }}
@@ -513,8 +608,7 @@ export default function ChangelogDrawer({
               />
             ) : (
               <p
-                className="py-8 text-center text-xs"
-                style={{ color: theme.textMuted }}
+                style={{ padding: "32px 0", textAlign: "center", fontSize: "12px", color: theme.textMuted }}
               >
                 No changelog entries yet.
               </p>
@@ -533,11 +627,10 @@ export default function ChangelogDrawer({
 
         {/* ── Footer ──────────────────────────────────────── */}
         <div
-          className="px-5 py-3"
-          style={{ borderTop: `1px solid ${theme.divider}` }}
+          style={{ padding: "12px 20px", borderTop: `1px solid ${theme.divider}` }}
         >
           {isPeek ? (
-            <div className="flex items-center justify-between">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <a
                 href={
                   latest
@@ -546,18 +639,31 @@ export default function ChangelogDrawer({
                 }
                 target="_blank"
                 rel="noreferrer"
-                className="text-[10px] font-bold uppercase tracking-wider transition-opacity hover:opacity-70"
-                style={{ color: theme.accent }}
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  textTransform: "uppercase" as const,
+                  letterSpacing: "0.08em",
+                  color: theme.accent,
+                  textDecoration: "none",
+                }}
               >
                 View on GitHub ↗
               </a>
               <button
                 onClick={expand}
-                className="rounded-lg px-4 py-2 text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer"
                 style={{
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  textTransform: "uppercase" as const,
+                  letterSpacing: "0.08em",
+                  cursor: "pointer",
                   background: theme.badgeBg,
                   color: theme.badgeText,
                   border: `1px solid ${theme.badgeBorder}`,
+                  transition: "all 200ms ease",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = theme.accent;
