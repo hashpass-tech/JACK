@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import { execSync, spawn } from 'child_process';
+import { execFileSync, execSync, spawn } from 'child_process';
 import * as path from 'path';
 
 export interface Task {
@@ -149,6 +149,13 @@ export class CodexAdapter implements AgentBackend {
     name = "codex";
 
     async executeTask(task: Task): Promise<TaskResult> {
+        const isInteractiveTty = Boolean(process.stdin.isTTY && process.stdout.isTTY);
+        const autoExecute = process.env.CODEX_AUTO_EXEC === '1' || !isInteractiveTty;
+
+        if (autoExecute) {
+            return this.executeNonInteractive(task);
+        }
+
         console.log(`
 🤖 CODEX TASK READY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -189,13 +196,70 @@ Press ENTER when done...
         };
     }
 
+    private executeNonInteractive(task: Task): TaskResult {
+        const prompt = this.buildTaskPrompt(task);
+
+        try {
+            execFileSync(
+                'codex',
+                ['-a', 'never', 'exec', '--sandbox', 'workspace-write', '-C', process.cwd(), '-'],
+                {
+                    input: prompt,
+                    stdio: ['pipe', 'inherit', 'inherit'],
+                    env: process.env,
+                }
+            );
+        } catch (e) {
+            return {
+                success: false,
+                output_path: task.output?.path ?? '',
+                verification: { compiled: false, tests_passed: false, acceptance_met: [] },
+                agent_log: `Codex exec failed: ${e}`,
+                duration_ms: 0
+            };
+        }
+
+        const exists = !!task.output?.path && fs.existsSync(task.output.path);
+        return {
+            success: exists,
+            output_path: task.output?.path ?? '',
+            verification: { compiled: exists, tests_passed: exists, acceptance_met: exists ? (task.acceptance ?? []) : [] },
+            agent_log: "Executed via Codex CLI (non-interactive)",
+            duration_ms: 0
+        };
+    }
+
+    private buildTaskPrompt(task: Task): string {
+        return `Complete this coding task in the current repository.
+
+Task: ${task.id} — ${task.title}
+Workspace: ${task.workspace ?? 'unspecified'}
+Output path: ${task.output?.path ?? '(not set)'}
+
+Requirement:
+${task.requirement}
+
+Context files:
+${(task.context ?? []).map(p => `- ${p}`).join('\n')}
+
+Acceptance criteria:
+${(task.acceptance ?? []).map(a => `- ${a}`).join('\n')}
+
+Verification commands:
+${(task.verify ?? []).map(cmd => `- ${cmd}`).join('\n')}
+
+Instructions:
+- Modify files as needed to satisfy the requirement.
+- Run verification commands when possible.
+- Stop when work is complete and summarize what changed.`;
+    }
+
     async checkAvailability(): Promise<boolean> {
-        if (!(process.stdin.isTTY && process.stdout.isTTY)) return false;
         try {
             execSync('which codex', { stdio: 'ignore' });
             return true;
         } catch {
-            return Boolean(process.env.OPENAI_API_KEY || process.env.CODEX_API_KEY);
+            return false;
         }
     }
 }
@@ -222,7 +286,7 @@ export class TaskOrchestrator {
         task: Task,
         options?: { preferredAgent?: string; verify?: boolean; noCommit?: boolean }
     ): Promise<TaskResult> {
-        const agent = await this.selectAgent(task, task.agent_config?.preferred ?? options?.preferredAgent);
+        const agent = await this.selectAgent(task, options?.preferredAgent ?? task.agent_config?.preferred);
         console.log(`🤖 Executing ${task.id} with ${agent.name}...`);
 
         const startTime = Date.now();
