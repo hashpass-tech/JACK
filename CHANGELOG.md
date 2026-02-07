@@ -1,3 +1,14 @@
+## [0.1.45](https://github.com/hashpass-tech/JACK/compare/v0.1.44...v0.1.45) (2026-02-07)
+
+
+### Features
+
+* **landing:** add cinematic Deep Dive auto-flow with sound & smooth 3D transitions ([d6b817c](https://github.com/hashpass-tech/JACK/commit/d6b817cb9687a41bad906d41226cbaf467c0dccb))
+
+
+
+
+
 ## [0.1.44](https://github.com/hashpass-tech/JACK/compare/v0.1.43-testnet.1...v0.1.44) (2026-02-07)
 
 
