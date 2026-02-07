@@ -750,7 +750,8 @@ MIT © JACK Team
 
 - **Documentation**: [Full API Documentation](https://docs.jack.example)
 - **Issues**: [GitHub Issues](https://github.com/your-org/jack/issues)
-- **Discord**: [Join our community](https://discord.gg/jack)
+- **Discord**: [Join our community](https://discord.gg/7k8CdmYHpn)
+- **X**: [Follow @Jack_kernel](https://x.com/Jack_kernel)
 
 ## Changelog
 

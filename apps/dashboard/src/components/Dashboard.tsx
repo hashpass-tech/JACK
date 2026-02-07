@@ -428,6 +428,12 @@ const Dashboard: FC<{ changelog?: string }> = ({ changelog = "" }) => {
             <a href="https://github.com/hashpass-tech/JACK" target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80" style={{ color: "var(--fg-primary)" }}>
               GitHub
             </a>
+            <a href="https://discord.gg/7k8CdmYHpn" target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80" style={{ color: "var(--fg-primary)" }}>
+              Discord
+            </a>
+            <a href="https://x.com/Jack_kernel" target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-80" style={{ color: "var(--fg-primary)" }}>
+              X
+            </a>
           </div>
         </div>
       </footer>
