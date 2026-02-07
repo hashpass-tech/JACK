@@ -132,6 +132,7 @@ pnpm release:all:minor  # minor release + docs deploy
 pnpm release:all:major  # major release + docs deploy
 pnpm release -- --with-docs         # include docs build
 pnpm release -- --with-docs-deploy  # include docs build + trigger Pages deploy workflow
+pnpm release -- --skip-deploy       # local/tag-only release (no GCS/Cloud Run deploy)
 pnpm release:docs                   # docs-only build
 pnpm release:docs:deploy            # docs-only build + workflow dispatch
 pnpm docs:impact:check              # validate docs impact for critical paths

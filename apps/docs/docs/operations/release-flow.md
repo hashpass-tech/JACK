@@ -42,6 +42,7 @@ pnpm release:all:minor
 pnpm release:all:major
 pnpm release -- --with-docs
 pnpm release -- --with-docs-deploy
+pnpm release -- --skip-deploy
 pnpm release:docs
 pnpm release:docs:deploy
 pnpm docs:impact:check
