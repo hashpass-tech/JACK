@@ -1,7 +1,9 @@
 ## [0.1.46](https://github.com/hashpass-tech/JACK/compare/v0.1.45...v0.1.46) (2026-02-07)
 
 
+### Documentation
 
+* **api:** add ERC-7824 Yellow setup details ([90a1207](https://github.com/hashpass-tech/JACK/commit/90a12075f1cf809cfa4dd592b458984b44df07fb))
 
 
 ## [0.1.45](https://github.com/hashpass-tech/JACK/compare/v0.1.44...v0.1.45) (2026-02-07)
@@ -10,6 +12,7 @@
 ### Features
 
 * **dashboard:** add neural background between top bar and footer ([b4de888](https://github.com/hashpass-tech/JACK/commit/b4de88812fa8852a5c3516001d3b0f95b25dd2a9))
+* **landing:** add cinematic Deep Dive auto-flow with sound & smooth 3D transitions ([d6b817c](https://github.com/hashpass-tech/JACK/commit/d6b817cb9687a41bad906d41226cbaf467c0dccb))
 
 
 
