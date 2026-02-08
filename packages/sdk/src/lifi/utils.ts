@@ -46,12 +46,12 @@ export function fromBaseUnits(amount: string, decimals: number): string {
   const whole = padded.slice(0, -decimals) || '0';
   
   // Remove trailing zeros without using regex to avoid ReDoS vulnerability
-  let fraction = padded.slice(-decimals);
-  let end = fraction.length;
-  while (end > 0 && fraction[end - 1] === '0') {
+  const rawFraction = padded.slice(-decimals);
+  let end = rawFraction.length;
+  while (end > 0 && rawFraction[end - 1] === '0') {
     end--;
   }
-  fraction = fraction.slice(0, end);
+  const fraction = rawFraction.slice(0, end);
   
   return fraction ? `${whole}.${fraction}` : whole;
 }
