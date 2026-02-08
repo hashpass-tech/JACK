@@ -41,7 +41,7 @@ jobs:
       - name: Run ESLint with security rules
         run: |
           echo "🔒 Running ESLint security checks..."
-          pnpm run lint || echo "::warning::ESLint found issues. Please review."
+          pnpm run lint
       
       - name: Check for secrets
         run: |
@@ -51,7 +51,7 @@ jobs:
       - name: Run secretlint
         run: |
           echo "🔑 Running secretlint..."
-          npx secretlint "**/*" || echo "::warning::Secretlint found potential secrets."
+          npx secretlint "**/*"
       
       - name: Security Summary
         if: always()
