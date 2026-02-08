@@ -39,6 +39,7 @@
     "contracts:test": "./scripts/contracts/forge.sh test -vv",
     "contracts:deploy:testnet": "./scripts/contracts/deploy-hook.sh contracts/.env.testnet",
     "contracts:deploy:mainnet": "./scripts/contracts/deploy-hook.sh contracts/.env.mainnet",
+    "yellow:demo": "node --import tsx scripts/prize-tracks/yellow-testnet-demo.ts",
     "contracts:smoke:testnet": "./scripts/contracts/smoke-hook.sh contracts/.env.testnet",
     "clean:docs": "node --import tsx scripts/clean-docs.ts",
     "upload:assets": "node --import tsx scripts/upload-assets.ts",
@@ -49,17 +50,20 @@
     "setup:bucket:production": "bash scripts/setup-asset-bucket.sh production"
   },
   "dependencies": {
+    "@erc7824/nitrolite": "^0.5.3",
     "@metamask/sdk": "^0.34.0",
     "@rainbow-me/rainbowkit": "^2.2.10",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@tanstack/react-query": "^5.90.20",
+    "@types/ws": "^8.18.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "serve": "^14.2.5",
     "three": "^0.182.0",
     "viem": "2.x",
-    "wagmi": "^3.4.2"
+    "wagmi": "^3.4.2",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@edcalderon/versioning": "^1.0.11",

@@ -112,9 +112,9 @@ This implementation plan breaks down the Uniswap v4 prize track integration into
     - **Property 13: Hook Data Helper Functions**
     - **Validates: Requirements 4.6**
 
-- [ ] 5. Implement Yellow Network demo script
+- [x] 5. Implement Yellow Network demo script
   - [ ] 5. Implement Yellow Network demo script
-  - [ ] 5.1 Create runYellowDemo function
+  - [x] 5.1 Create runYellowDemo function
     - Initialize JACK_SDK with Yellow configuration
     - Create state channel with test counterparty
     - Execute 3-5 off-chain transfers with logging
@@ -122,19 +122,19 @@ This implementation plan breaks down the Uniswap v4 prize track integration into
     - Display summary with off-chain state updates and on-chain proof
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 5.1_
 
-  - [ ] 5.2 Write property test for Yellow provider initialization
+  - [x] 5.2 Write property test for Yellow provider initialization
     - **Property 1: Yellow Provider Initialization**
     - **Validates: Requirements 1.1**
 
-  - [ ] 5.3 Write property test for channel creation
+  - [x] 5.3 Write property test for channel creation
     - **Property 2: Channel Creation**
     - **Validates: Requirements 1.2**
 
-  - [ ] 5.4 Write property test for off-chain state updates
+  - [x] 5.4 Write property test for off-chain state updates
     - **Property 3: Off-Chain State Updates**
     - **Validates: Requirements 1.3, 1.6**
 
-  - [ ] 5.5 Write property test for channel settlement round trip
+  - [x] 5.5 Write property test for channel settlement round trip
     - **Property 4: Channel Settlement Round Trip**
     - **Validates: Requirements 1.4**
 
