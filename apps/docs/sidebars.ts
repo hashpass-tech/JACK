@@ -20,6 +20,14 @@ const sidebars: SidebarsConfig = {
     "demo-script",
     {
       type: "category",
+      label: "TypeScript SDK",
+      link: { type: "doc", id: "sdk/index" },
+      items: [
+        "sdk/installation",
+      ],
+    },
+    {
+      type: "category",
       label: "Smart Contracts",
       link: { type: "doc", id: "contracts/index" },
       items: [

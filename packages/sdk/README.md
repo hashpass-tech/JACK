@@ -855,7 +855,7 @@ MIT © JACK Team
 
 ## Support
 
-- **Documentation**: [https://jack.hashpass.tech/docs](https://jack.hashpass.tech/docs)
+- **Documentation**: [https://docs.jack.lukas.money/docs](https://docs.jack.lukas.money/docs)
 - **Repository**: [https://github.com/hashpass-tech/JACK](https://github.com/hashpass-tech/JACK)
 - **Issues**: [GitHub Issues](https://github.com/hashpass-tech/JACK/issues)
 - **Discord**: [Join our community](https://discord.gg/7k8CdmYHpn)
