@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [SDK v1.2.3] - 2026-02-08
+
+### Changed - Badge Updates
+- **Discord Badge**: Updated with live member count (Server ID: 1131014788072349827)
+- **X (Twitter) Badge**: Added to both main and SDK READMEs
+- **README Badges**: Now show Discord member count and X follow link
+
+### Technical Details
+- **No Code Changes**: This is a documentation-only release to update npm package README
+- **Testing**: 517 tests still passing
+- **Build**: All targets compile successfully
+
 ## [SDK v1.2.2] - 2026-02-08
 
 ### Changed - Documentation Updates
