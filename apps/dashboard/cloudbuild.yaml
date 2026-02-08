@@ -6,15 +6,19 @@ steps:
       - -c
       - |
         echo "Uploading assets to GCS..."
+        # Create bucket if it doesn't exist
+        gsutil ls -b gs://jack-dashboard-assets 2>/dev/null || gsutil mb -p lsts-482607 -c STANDARD -l US gs://jack-dashboard-assets
+        gsutil iam ch allUsers:objectViewer gs://jack-dashboard-assets 2>/dev/null || true
+        # Sync videos directory
         gsutil -m rsync -r -d apps/dashboard/public/videos gs://jack-dashboard-assets/videos
-        gsutil -m rsync -r apps/dashboard/public/*.png gs://jack-dashboard-assets/ || true
-        gsutil -m rsync -r apps/dashboard/public/*.jpg gs://jack-dashboard-assets/ || true
-        gsutil -m rsync -r apps/dashboard/public/*.svg gs://jack-dashboard-assets/ || true
-        gsutil -m rsync -r apps/dashboard/public/*.ico gs://jack-dashboard-assets/ || true
-        gsutil -m rsync -r apps/dashboard/public/*.webmanifest gs://jack-dashboard-assets/ || true
-        gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" gs://jack-dashboard-assets/**
+        # Copy individual asset files
+        gsutil -m cp apps/dashboard/public/*.png gs://jack-dashboard-assets/ 2>/dev/null || true
+        gsutil -m cp apps/dashboard/public/*.ico gs://jack-dashboard-assets/ 2>/dev/null || true
+        gsutil -m cp apps/dashboard/public/*.webmanifest gs://jack-dashboard-assets/ 2>/dev/null || true
+        # Set cache headers
+        gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" gs://jack-dashboard-assets/** 2>/dev/null || true
         echo "Assets uploaded successfully"
-  
+
   # Build Docker image
   - name: gcr.io/cloud-builders/docker
     args:
