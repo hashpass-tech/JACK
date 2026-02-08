@@ -164,7 +164,7 @@ export function extractRevertReason(error: unknown): string | undefined {
 
   // Generic revert pattern: "revert <reason>" or "reverted with reason: <reason>"
   // Use more specific pattern to prevent ReDoS: limit whitespace repetition and use possessive matching
-  const genericMatch = message.match(/revert(?:ed)?(?:\s+with\s+reason)?[:\s]+((?:[^\n]+))$/im);
+  const genericMatch = message.match(/revert(?:ed)?(?:\s+with\s+reason)?[:\s]+([^\n]+)$/im);
   if (genericMatch) {
     return genericMatch[1].trim();
   }

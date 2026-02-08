@@ -30,3 +30,4 @@ config/private.json
 .env.local
 .env.development.local
 set-gcloud-project.sh
+npm-shim/package-lock.json
