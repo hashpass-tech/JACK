@@ -3,7 +3,9 @@
 **Release Date**: February 7, 2026  
 **Version**: 1.0.0 → 1.1.0  
 **Branch**: develop  
-**Commit**: fcd8ef3
+**Commit**: fcd8ef3  
+**Tag**: sdk-v1.1.0  
+**npm Package**: @jack-kernel/sdk@1.1.0 (publishing via GitHub Actions)
 
 ## Overview
 
@@ -217,6 +219,23 @@ const sdk = new JACK_SDK({
 ---
 
 **Status**: ✅ Released to develop branch  
+**Tag**: ✅ sdk-v1.1.0 pushed  
 **Build**: ✅ All tests passing (517/517)  
+**Publishing**: 🔄 GitHub Actions workflow running  
 **Compatibility**: ✅ Backward compatible  
 **Ready for**: Dashboard integration, production testing
+
+## GitHub Actions Workflow
+
+The SDK is being published to npm via GitHub Actions:
+- **Workflow**: `.github/workflows/publish-sdk.yml`
+- **Trigger**: Tag `sdk-v1.1.0`
+- **Steps**: Install → Build → Test → Publish to npm
+- **Status**: Check https://github.com/hashpass-tech/JACK/actions
+
+Once the workflow completes, the package will be available at:
+```bash
+npm install @jack-kernel/sdk@1.1.0
+# or
+pnpm add @jack-kernel/sdk@1.1.0
+```
