@@ -33,7 +33,7 @@ const EndCardComposition: React.FC<EndCardCompositionProps> = ({
   socialHandle = "@JACKKernel",
 }) => {
   const frame = useCurrentFrame();
-  const { fps, width, height, durationInFrames } = useVideoConfig();
+  const { fps, width, durationInFrames } = useVideoConfig();
   const colors = COLORS[theme];
 
   // Enter animation
@@ -47,12 +47,10 @@ const EndCardComposition: React.FC<EndCardCompositionProps> = ({
   // Exit fade
   const exitOpacity =
     frame > durationInFrames - 20
-      ? interpolate(
-          frame,
-          [durationInFrames - 20, durationInFrames],
-          [1, 0],
-          { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
-        )
+      ? interpolate(frame, [durationInFrames - 20, durationInFrames], [1, 0], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        })
       : 1;
 
   return (

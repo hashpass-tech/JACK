@@ -57,18 +57,20 @@ interface SectionDef {
   zoomTarget: { x: number; y: number; scale: number } | null;
 }
 
-const SECTIONS: SectionDef[] = (sectionsData as any[]).map((s: any) => ({
-  id: s.id,
-  label: s.label,
-  screenshot: s.screenshot,
-  startFrame: s.startFrame,
-  endFrame: s.endFrame,
-  audioFile: s.audioFile,
-  audioDurationS: s.audioDurationS,
-  zoomTarget: s.zoomTarget,
-}));
+const SECTIONS: SectionDef[] = (sectionsData as SectionDef[]).map(
+  (s: SectionDef) => ({
+    id: s.id,
+    label: s.label,
+    screenshot: s.screenshot,
+    startFrame: s.startFrame,
+    endFrame: s.endFrame,
+    audioFile: s.audioFile,
+    audioDurationS: s.audioDurationS,
+    zoomTarget: s.zoomTarget,
+  }),
+);
 
-const TOTAL_FRAMES = SECTIONS[SECTIONS.length - 1].endFrame;
+const _TOTAL_FRAMES = SECTIONS[SECTIONS.length - 1].endFrame;
 
 // ── Subtitles (from generated audio) ──
 interface SubtitleEntry {
@@ -86,12 +88,8 @@ function getCurrentSection(frame: number): SectionDef {
   );
 }
 
-function getCaption(
-  frame: number,
-): { text: string; progress: number } | null {
-  const c = SUBTITLES.find(
-    (c) => frame >= c.startFrame && frame < c.endFrame,
-  );
+function getCaption(frame: number): { text: string; progress: number } | null {
+  const c = SUBTITLES.find((c) => frame >= c.startFrame && frame < c.endFrame);
   if (!c) return null;
   const progress = (frame - c.startFrame) / (c.endFrame - c.startFrame);
   return { text: c.text, progress };
@@ -307,20 +305,12 @@ const AnimatedCursor: React.FC<{
 // ══ DASHBOARD SCREENSHOT VIEWER ═════════════
 // ══════════════════════════════════════════════
 const DashboardScreen: React.FC<{
-  frame: number;
   fps: number;
   screenshotPath: string;
   zoomTarget: { x: number; y: number; scale: number } | null;
   sectionFrame: number;
   sectionDuration: number;
-}> = ({
-  frame,
-  fps,
-  screenshotPath,
-  zoomTarget,
-  sectionFrame,
-  sectionDuration,
-}) => {
+}> = ({ fps, screenshotPath, zoomTarget, sectionFrame, sectionDuration }) => {
   const zoomProgress = zoomTarget
     ? interpolate(
         sectionFrame,
@@ -658,8 +648,8 @@ const DashboardWalkthroughComposition: React.FC<DashboardWalkthroughProps> = ({
           key={i}
           style={{
             position: "absolute",
-            left: `${((i * 53 + frame * 0.02) % 100)}%`,
-            top: `${((i * 37 + Math.sin(frame / 60 + i) * 10 + 50) % 100)}%`,
+            left: `${(i * 53 + frame * 0.02) % 100}%`,
+            top: `${(i * 37 + Math.sin(frame / 60 + i) * 10 + 50) % 100}%`,
             width: 3,
             height: 3,
             borderRadius: "50%",
@@ -708,11 +698,7 @@ const DashboardWalkthroughComposition: React.FC<DashboardWalkthroughProps> = ({
                 height: 6,
                 borderRadius: "50%",
                 background: "#fff",
-                opacity: isSpeaking
-                  ? Math.sin(frame / 5) > 0
-                    ? 1
-                    : 0.3
-                  : 0.5,
+                opacity: isSpeaking ? (Math.sin(frame / 5) > 0 ? 1 : 0.3) : 0.5,
               }}
             />
             REC
@@ -744,9 +730,7 @@ const DashboardWalkthroughComposition: React.FC<DashboardWalkthroughProps> = ({
           >
             JACK Kernel
           </span>
-          <span
-            style={{ fontSize: 11, color: BRAND.MUTED, marginLeft: 4 }}
-          >
+          <span style={{ fontSize: 11, color: BRAND.MUTED, marginLeft: 4 }}>
             Dashboard Walkthrough
           </span>
         </div>
@@ -859,7 +843,6 @@ const DashboardWalkthroughComposition: React.FC<DashboardWalkthroughProps> = ({
       {/* ── DASHBOARD SCREENSHOT ── */}
       {section.id !== "intro" && section.id !== "outro" && (
         <DashboardScreen
-          frame={frame}
           fps={fps}
           screenshotPath={currentScreenshot}
           zoomTarget={section.zoomTarget}
@@ -1043,11 +1026,7 @@ const DashboardWalkthroughComposition: React.FC<DashboardWalkthroughProps> = ({
                 height: 8,
                 borderRadius: "50%",
                 background: BRAND.GOLD,
-                opacity: isSpeaking
-                  ? Math.sin(frame / 4) > 0
-                    ? 1
-                    : 0.4
-                  : 0.3,
+                opacity: isSpeaking ? (Math.sin(frame / 4) > 0 ? 1 : 0.4) : 0.3,
                 flexShrink: 0,
               }}
             />
@@ -1121,8 +1100,7 @@ const DashboardWalkthroughComposition: React.FC<DashboardWalkthroughProps> = ({
         {Math.floor((frame / fps) % 60)
           .toString()
           .padStart(2, "0")}
-        .
-        {(frame % fps).toString().padStart(2, "0")}
+        .{(frame % fps).toString().padStart(2, "0")}
       </div>
     </AbsoluteFill>
   );

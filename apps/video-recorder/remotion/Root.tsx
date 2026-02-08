@@ -145,17 +145,61 @@ export const RemotionRoot = () => {
         defaultProps={{
           visemeSequence: [],
           captions: [
-            { startFrame: 90, endFrame: 250, text: "Grrr! Welcome aboard, matey. I'm JACK, your DeFi settlement captain. Let me show you around the dashboard." },
-            { startFrame: 260, endFrame: 500, text: "Arrr, this be the Create Intent tab \u2014 where every voyage across chains begins! Select your source, destination, token, and amount." },
-            { startFrame: 510, endFrame: 740, text: "Intents abstract away all the bridge complexity. You set the destination, JACK charts the course. Grrr, smooth sailing!" },
-            { startFrame: 760, endFrame: 1000, text: "The Executions tab shows your fleet in motion. Track each intent from pending through executing to settled. Arrr!" },
-            { startFrame: 1010, endFrame: 1250, text: "Our agent-based execution guarantees atomic settlement. No partial fills, no stranded treasure. That's a captain's promise!" },
-            { startFrame: 1260, endFrame: 1490, text: "You can drill into any execution to see the full lifecycle and transaction details." },
-            { startFrame: 1510, endFrame: 1750, text: "Agent & Costs gives you full transparency \u2014 a wise pirate always knows where his gold goes!" },
-            { startFrame: 1760, endFrame: 2000, text: "Budget tracking lets you set limits and monitor your spending as you navigate the DeFi sea." },
-            { startFrame: 2010, endFrame: 2240, text: "Every doubloon is on-chain, verifiable, and transparent. Grrr \u2014 that's the JACK Kernel way!" },
-            { startFrame: 2260, endFrame: 2500, text: "Ready to set sail? Connect your wallet and create your first settlement intent, matey!" },
-            { startFrame: 2510, endFrame: 2690, text: "Visit testnet.jack.lukas.money to try it out. Grrr \u2014 the DeFi seas await! Let's gooo!" },
+            {
+              startFrame: 90,
+              endFrame: 250,
+              text: "Grrr! Welcome aboard, matey. I'm JACK, your DeFi settlement captain. Let me show you around the dashboard.",
+            },
+            {
+              startFrame: 260,
+              endFrame: 500,
+              text: "Arrr, this be the Create Intent tab \u2014 where every voyage across chains begins! Select your source, destination, token, and amount.",
+            },
+            {
+              startFrame: 510,
+              endFrame: 740,
+              text: "Intents abstract away all the bridge complexity. You set the destination, JACK charts the course. Grrr, smooth sailing!",
+            },
+            {
+              startFrame: 760,
+              endFrame: 1000,
+              text: "The Executions tab shows your fleet in motion. Track each intent from pending through executing to settled. Arrr!",
+            },
+            {
+              startFrame: 1010,
+              endFrame: 1250,
+              text: "Our agent-based execution guarantees atomic settlement. No partial fills, no stranded treasure. That's a captain's promise!",
+            },
+            {
+              startFrame: 1260,
+              endFrame: 1490,
+              text: "You can drill into any execution to see the full lifecycle and transaction details.",
+            },
+            {
+              startFrame: 1510,
+              endFrame: 1750,
+              text: "Agent & Costs gives you full transparency \u2014 a wise pirate always knows where his gold goes!",
+            },
+            {
+              startFrame: 1760,
+              endFrame: 2000,
+              text: "Budget tracking lets you set limits and monitor your spending as you navigate the DeFi sea.",
+            },
+            {
+              startFrame: 2010,
+              endFrame: 2240,
+              text: "Every doubloon is on-chain, verifiable, and transparent. Grrr \u2014 that's the JACK Kernel way!",
+            },
+            {
+              startFrame: 2260,
+              endFrame: 2500,
+              text: "Ready to set sail? Connect your wallet and create your first settlement intent, matey!",
+            },
+            {
+              startFrame: 2510,
+              endFrame: 2690,
+              text: "Visit testnet.jack.lukas.money to try it out. Grrr \u2014 the DeFi seas await! Let's gooo!",
+            },
           ],
           dashboardScreenshots: {},
         }}
@@ -182,18 +226,23 @@ export const RemotionRoot = () => {
         width={1920}
         height={1080}
         fps={FPS}
-        durationInFrames={INTRO_DURATION + WALKTHROUGH_DURATION + ENDCARD_DURATION}
-        component={({ }) => {
+        durationInFrames={
+          INTRO_DURATION + WALKTHROUGH_DURATION + ENDCARD_DURATION
+        }
+        component={() => {
           return (
             <>
-              <Sequence from={0} durationInFrames={INTRO_DURATION}>
+              <Sequence durationInFrames={INTRO_DURATION}>
                 <IntroComposition
                   theme="dark"
                   projectName="JACK Kernel"
                   tagline="Autonomous DeFi Settlement Network"
                 />
               </Sequence>
-              <Sequence from={INTRO_DURATION} durationInFrames={WALKTHROUGH_DURATION}>
+              <Sequence
+                from={INTRO_DURATION}
+                durationInFrames={WALKTHROUGH_DURATION}
+              >
                 <DashboardWalkthroughComposition
                   visemeSequence={[]}
                   captions={[]}

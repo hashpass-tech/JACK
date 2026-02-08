@@ -4,7 +4,7 @@
  * Renders the JACK character in a Three.js scene as a Remotion video.
  * Supports both square (1080x1080) and landscape (1920x1080) layouts.
  */
-import React, { useMemo } from "react";
+import React from "react";
 import {
   AbsoluteFill,
   useCurrentFrame,
@@ -134,7 +134,7 @@ const JackAvatarComposition: React.FC<JackAvatarCompositionProps> = ({
       )}
 
       {/* Title overlay */}
-      <Sequence from={0} durationInFrames={durationInFrames}>
+      <Sequence durationInFrames={durationInFrames}>
         <AbsoluteFill
           style={{
             justifyContent: "flex-end",

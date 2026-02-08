@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable security/detect-non-literal-fs-filename */
 /**
  * generate-voiceover.mjs — Generate TTS voiceover + word-level subtitle JSON
  *
@@ -14,7 +15,13 @@
  *   node scripts/generate-voiceover.mjs --voice en-US-GuyNeural
  */
 import { execSync, spawn } from "child_process";
-import { mkdirSync, writeFileSync, readFileSync, existsSync, unlinkSync } from "fs";
+import {
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  existsSync,
+  unlinkSync,
+} from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -26,7 +33,9 @@ const FPS = 30;
 // ── Parse args ──
 const args = process.argv.slice(2);
 const voiceArg = args.find((a) => a.startsWith("--voice"));
-const VOICE = voiceArg ? args[args.indexOf(voiceArg) + 1] : "en-US-ChristopherNeural";
+const VOICE = voiceArg
+  ? args[args.indexOf(voiceArg) + 1]
+  : "en-US-ChristopherNeural";
 
 // ── Caption segments (must match composition timeline) ──
 // Each segment: { id, text, pauseAfterMs }
@@ -187,16 +196,18 @@ async function main() {
     const seg = SEGMENTS[i];
     const audioFile = join(tmpDir, `${seg.id}.mp3`);
 
-    console.log(`  [${i + 1}/${SEGMENTS.length}] ${seg.id}: "${seg.text.slice(0, 50)}..."`);
+    console.log(
+      `  [${i + 1}/${SEGMENTS.length}] ${seg.id}: "${seg.text.slice(0, 50)}..."`,
+    );
 
     execSync(
       `edge-tts --voice "${VOICE}" --text "${seg.text.replace(/"/g, '\\"')}" --write-media "${audioFile}"`,
-      { stdio: "pipe" }
+      { stdio: "pipe" },
     );
 
     const durationStr = execSync(
       `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${audioFile}"`,
-      { encoding: "utf-8" }
+      { encoding: "utf-8" },
     ).trim();
 
     segmentFiles.push({
@@ -208,7 +219,13 @@ async function main() {
 
   // ── Step 2: Build per-section audio files ──
   // Group segments by section
-  const sectionOrder = ["intro", "create-intent", "executions", "agent-costs", "outro"];
+  const sectionOrder = [
+    "intro",
+    "create-intent",
+    "executions",
+    "agent-costs",
+    "outro",
+  ];
   const sectionSegments = {};
   for (const seg of segmentFiles) {
     if (!sectionSegments[seg.section]) sectionSegments[seg.section] = [];
@@ -234,7 +251,7 @@ async function main() {
     const leadSilence = join(tmpDir, `lead-${sectionId}.mp3`);
     execSync(
       `ffmpeg -y -f lavfi -i anullsrc=r=24000:cl=mono -t ${PADDING_BEFORE} -q:a 9 "${leadSilence}" 2>/dev/null`,
-      { stdio: "pipe" }
+      { stdio: "pipe" },
     );
     concatContent += `file '${leadSilence}'\n`;
 
@@ -245,7 +262,8 @@ async function main() {
       const seg = segs[i];
       concatContent += `file '${seg.audioFile}'\n`;
 
-      const subStartFrame = cumulativeStartFrame + Math.round(sectionTimeS * FPS);
+      const subStartFrame =
+        cumulativeStartFrame + Math.round(sectionTimeS * FPS);
       const subEndFrame = subStartFrame + Math.round(seg.duration * FPS);
       sectionSubs.push({
         startFrame: subStartFrame,
@@ -262,7 +280,7 @@ async function main() {
         const silFile = join(tmpDir, `sil-${seg.id}.mp3`);
         execSync(
           `ffmpeg -y -f lavfi -i anullsrc=r=24000:cl=mono -t ${pauseS} -q:a 9 "${silFile}" 2>/dev/null`,
-          { stdio: "pipe" }
+          { stdio: "pipe" },
         );
         concatContent += `file '${silFile}'\n`;
         sectionTimeS += pauseS;
@@ -273,7 +291,7 @@ async function main() {
     const trailSilence = join(tmpDir, `trail-${sectionId}.mp3`);
     execSync(
       `ffmpeg -y -f lavfi -i anullsrc=r=24000:cl=mono -t 0.5 -q:a 9 "${trailSilence}" 2>/dev/null`,
-      { stdio: "pipe" }
+      { stdio: "pipe" },
     );
     concatContent += `file '${trailSilence}'\n`;
     sectionTimeS += 0.5;
@@ -284,15 +302,15 @@ async function main() {
     const sectionAudioFile = join(AUDIO_DIR, `section-${sectionId}.mp3`);
     execSync(
       `ffmpeg -y -f concat -safe 0 -i "${concatPath}" -c copy "${sectionAudioFile}" 2>/dev/null`,
-      { stdio: "pipe" }
+      { stdio: "pipe" },
     );
 
     // Get actual duration
     const actualDur = parseFloat(
       execSync(
         `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${sectionAudioFile}"`,
-        { encoding: "utf-8" }
-      ).trim()
+        { encoding: "utf-8" },
+      ).trim(),
     );
 
     const sectionFrames = Math.ceil(actualDur * FPS);
@@ -305,17 +323,24 @@ async function main() {
     };
 
     allSubtitles.push(...sectionSubs);
-    console.log(`  ✅ ${sectionId}: ${actualDur.toFixed(1)}s (${sectionFrames} frames)`);
+    console.log(
+      `  ✅ ${sectionId}: ${actualDur.toFixed(1)}s (${sectionFrames} frames)`,
+    );
 
     cumulativeStartFrame += sectionFrames;
   }
 
   const totalFrames = cumulativeStartFrame;
   const totalDurationS = totalFrames / FPS;
-  console.log(`\n📐 Total composition: ${totalDurationS.toFixed(1)}s (${totalFrames} frames @ ${FPS}fps)`);
+  console.log(
+    `\n📐 Total composition: ${totalDurationS.toFixed(1)}s (${totalFrames} frames @ ${FPS}fps)`,
+  );
 
   // ── Step 3: Write output files ──
-  writeFileSync(join(AUDIO_DIR, "subtitles.json"), JSON.stringify(allSubtitles, null, 2));
+  writeFileSync(
+    join(AUDIO_DIR, "subtitles.json"),
+    JSON.stringify(allSubtitles, null, 2),
+  );
   console.log(`✅ subtitles.json: ${allSubtitles.length} captions`);
 
   const audioMap = {
@@ -326,7 +351,10 @@ async function main() {
     sections: sectionAudioInfo,
     subtitles: allSubtitles,
   };
-  writeFileSync(join(AUDIO_DIR, "audio-map.json"), JSON.stringify(audioMap, null, 2));
+  writeFileSync(
+    join(AUDIO_DIR, "audio-map.json"),
+    JSON.stringify(audioMap, null, 2),
+  );
   console.log(`✅ audio-map.json`);
 
   // ── Step 4: Generate composition SECTIONS constant ──
@@ -334,9 +362,21 @@ async function main() {
   console.log(`\n📋 SECTIONS for composition:`);
   const sectionMeta = {
     intro: { label: "INTRO", screenshot: "full", zoomTarget: null },
-    "create-intent": { label: "CREATE INTENT", screenshot: "createIntent", zoomTarget: { x: 0.35, y: 0.45, scale: 1.2 } },
-    executions: { label: "EXECUTIONS", screenshot: "executions", zoomTarget: { x: 0.5, y: 0.5, scale: 1.15 } },
-    "agent-costs": { label: "AGENT & COSTS", screenshot: "agentCosts", zoomTarget: { x: 0.5, y: 0.45, scale: 1.2 } },
+    "create-intent": {
+      label: "CREATE INTENT",
+      screenshot: "createIntent",
+      zoomTarget: { x: 0.35, y: 0.45, scale: 1.2 },
+    },
+    executions: {
+      label: "EXECUTIONS",
+      screenshot: "executions",
+      zoomTarget: { x: 0.5, y: 0.5, scale: 1.15 },
+    },
+    "agent-costs": {
+      label: "AGENT & COSTS",
+      screenshot: "agentCosts",
+      zoomTarget: { x: 0.5, y: 0.45, scale: 1.2 },
+    },
     outro: { label: "GET STARTED", screenshot: "full", zoomTarget: null },
   };
 
@@ -348,11 +388,16 @@ async function main() {
     audioFile: sectionAudioInfo[id].file,
     audioDurationS: sectionAudioInfo[id].durationS,
   }));
-  writeFileSync(join(AUDIO_DIR, "sections.json"), JSON.stringify(sectionsArray, null, 2));
+  writeFileSync(
+    join(AUDIO_DIR, "sections.json"),
+    JSON.stringify(sectionsArray, null, 2),
+  );
   console.log(`✅ sections.json`);
 
   for (const s of sectionsArray) {
-    console.log(`  ${s.id}: frames ${s.startFrame}-${s.endFrame} (${s.audioDurationS.toFixed(1)}s)`);
+    console.log(
+      `  ${s.id}: frames ${s.startFrame}-${s.endFrame} (${s.audioDurationS.toFixed(1)}s)`,
+    );
   }
 
   // ── Cleanup tmp ──

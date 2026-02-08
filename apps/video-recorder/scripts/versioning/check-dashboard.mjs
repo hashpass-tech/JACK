@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable security/detect-non-literal-fs-filename */
 /**
  * check-dashboard.mjs
  *
@@ -7,7 +8,13 @@
  */
 import puppeteer from "puppeteer";
 import { createHash } from "crypto";
-import { mkdirSync, existsSync, readFileSync, writeFileSync, copyFileSync } from "fs";
+import {
+  mkdirSync,
+  existsSync,
+  readFileSync,
+  writeFileSync,
+  copyFileSync,
+} from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import readline from "readline";
@@ -54,12 +61,18 @@ function nextVersion(latestVersion) {
 }
 
 function ask(question, defaultValue = "") {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
   return new Promise((resolve) => {
-    rl.question(`${question}${defaultValue ? ` [${defaultValue}]` : ""}: `, (answer) => {
-      rl.close();
-      resolve(answer.trim() || defaultValue);
-    });
+    rl.question(
+      `${question}${defaultValue ? ` [${defaultValue}]` : ""}: `,
+      (answer) => {
+        rl.close();
+        resolve(answer.trim() || defaultValue);
+      },
+    );
   });
 }
 
@@ -75,7 +88,11 @@ async function main() {
   const browser = await puppeteer.launch({
     headless: "new",
     executablePath: process.env.CHROME_PATH || "/usr/bin/google-chrome",
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+    ],
   });
 
   const page = await browser.newPage();
@@ -158,7 +175,10 @@ async function main() {
     },
   };
 
-  writeFileSync(path.join(versionDir, "meta.json"), JSON.stringify(meta, null, 2));
+  writeFileSync(
+    path.join(versionDir, "meta.json"),
+    JSON.stringify(meta, null, 2),
+  );
 
   // Update latest.json
   writeFileSync(

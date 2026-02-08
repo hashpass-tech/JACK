@@ -13,7 +13,6 @@ import {
   useVideoConfig,
   interpolate,
   spring,
-  Sequence,
 } from "remotion";
 import { JACK_BRAND, COLORS } from "../../config/themes";
 import { BOLD_FONT, MONOSPACE_FONT } from "../../config/fonts";
@@ -74,12 +73,10 @@ const IntroComposition: React.FC<IntroCompositionProps> = ({
   // Exit fade
   const exitFade =
     frame > durationInFrames - 20
-      ? interpolate(
-          frame,
-          [durationInFrames - 20, durationInFrames],
-          [1, 0],
-          { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
-        )
+      ? interpolate(frame, [durationInFrames - 20, durationInFrames], [1, 0], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        })
       : 1;
 
   return (
