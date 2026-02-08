@@ -208,7 +208,7 @@ function normalizeKey(value: string): string {
  */
 export function mapYellowEvent(event: string): MappedEvent | undefined {
   const key = normalizeKey(event);
-  return EVENT_STATUS_MAP[key];
+  return Object.hasOwn(EVENT_STATUS_MAP, key) ? EVENT_STATUS_MAP[key] : undefined;
 }
 
 /**
@@ -224,7 +224,7 @@ export function mapYellowEvent(event: string): MappedEvent | undefined {
  */
 export function mapChannelStatus(status: string): MappedEvent | undefined {
   const key = normalizeKey(status);
-  return CHANNEL_STATUS_MAP[key];
+  return Object.hasOwn(CHANNEL_STATUS_MAP, key) ? CHANNEL_STATUS_MAP[key] : undefined;
 }
 
 /**
@@ -240,7 +240,7 @@ export function mapChannelStatus(status: string): MappedEvent | undefined {
  */
 export function mapStateIntent(intent: string): MappedEvent | undefined {
   const key = normalizeKey(intent);
-  return STATE_INTENT_MAP[key];
+  return Object.hasOwn(STATE_INTENT_MAP, key) ? STATE_INTENT_MAP[key] : undefined;
 }
 
 /**
