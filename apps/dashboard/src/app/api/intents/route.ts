@@ -491,7 +491,7 @@ export async function POST(request: NextRequest) {
 
             const intents = getIntents() as Record<string, IntentRecord>;
             const rawIntentId = (body as { intentId?: unknown }).intentId;
-            if (typeof rawIntentId !== 'string' || !isValidIntentId(rawIntentId)) {
+            if (!isValidIntentId(rawIntentId)) {
                 return NextResponse.json({ error: 'Invalid intent identifier' }, { status: 403 });
             }
             const intentFromStore: IntentRecord | undefined = intents[rawIntentId];
