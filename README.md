@@ -104,7 +104,7 @@ jack/
 
 ## Documentation
 
-- [Docs Platform](https://jack.hashpass.tech/docs)
+- [Docs Platform](https://docs.jack.lukas.money/docs)
 - [Mission & Overview](./apps/docs/docs/overview.md)
 - [Architecture](./apps/docs/docs/architecture.md)
 - [Demo Narrative](./docs/demo-script.md)
