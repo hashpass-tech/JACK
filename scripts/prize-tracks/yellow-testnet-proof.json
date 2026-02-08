@@ -1,0 +1,77 @@
+{
+  "demo": "yellow-network-testnet",
+  "network": "sepolia",
+  "chainId": 11155111,
+  "wallet": "0x114d72D97Aa9C413A1ba3f0Cd37F439D668EA1aD",
+  "channelId": "0xfe378980450916d2f1215d0cd8e53381896b1e5a1a0008d8fcbad0a9f73847ba",
+  "contracts": {
+    "custody": "0x019B65A265EB3363822f2752141b3dF16131b262",
+    "adjudicator": "0x7c7ccbc98469190849BCC6c926307794fDfB11F2"
+  },
+  "proofs": [
+    {
+      "step": "Authentication",
+      "type": "off-chain",
+      "data": {
+        "sessionKey": "0xeddFE2b62c7447bE3F8843F8eEA89e6E76f7377F",
+        "wallet": "0x114d72D97Aa9C413A1ba3f0Cd37F439D668EA1aD"
+      },
+      "timestamp": 1770571306988
+    },
+    {
+      "step": "Channel creation",
+      "type": "on-chain",
+      "txHash": "0x5a66c84477bcea59aae0f2fe48a83dc251eb5da0ea5e3db0afcdb1046fcd1b14",
+      "etherscanUrl": "https://sepolia.etherscan.io/tx/0x5a66c84477bcea59aae0f2fe48a83dc251eb5da0ea5e3db0afcdb1046fcd1b14",
+      "data": {
+        "channelId": "0xfe378980450916d2f1215d0cd8e53381896b1e5a1a0008d8fcbad0a9f73847ba"
+      },
+      "timestamp": 1770571334346
+    },
+    {
+      "step": "Channel resize (fund)",
+      "type": "on-chain",
+      "txHash": "0xf243e78ede15f20f40156cfa567ee6dac5b7cf0bb17929b54bada1d3e2f90e22",
+      "etherscanUrl": "https://sepolia.etherscan.io/tx/0xf243e78ede15f20f40156cfa567ee6dac5b7cf0bb17929b54bada1d3e2f90e22",
+      "data": {
+        "channelId": "0xfe378980450916d2f1215d0cd8e53381896b1e5a1a0008d8fcbad0a9f73847ba",
+        "allocateAmount": "10"
+      },
+      "timestamp": 1770571350355
+    },
+    {
+      "step": "Off-chain transfer (sent)",
+      "type": "off-chain",
+      "data": {
+        "amount": "5",
+        "asset": "ytest.usd",
+        "channelId": "0xfe378980450916d2f1215d0cd8e53381896b1e5a1a0008d8fcbad0a9f73847ba",
+        "note": "Transfer message sent, response not confirmed"
+      },
+      "timestamp": 1770571350785
+    },
+    {
+      "step": "Channel close (settlement)",
+      "type": "on-chain",
+      "txHash": "0x2e19f5cf81098ee0c5c50d00f1f5f3f1892fb64b99e31b694eb6a6a2bc765056",
+      "etherscanUrl": "https://sepolia.etherscan.io/tx/0x2e19f5cf81098ee0c5c50d00f1f5f3f1892fb64b99e31b694eb6a6a2bc765056",
+      "data": {
+        "channelId": "0xfe378980450916d2f1215d0cd8e53381896b1e5a1a0008d8fcbad0a9f73847ba"
+      },
+      "timestamp": 1770571377124
+    },
+    {
+      "step": "Withdrawal",
+      "type": "on-chain",
+      "txHash": "0x4cba96aa53cb7a0a6f322ee2b329e93219b93df918befe47b833f6f5d4f3ea7f",
+      "etherscanUrl": "https://sepolia.etherscan.io/tx/0x4cba96aa53cb7a0a6f322ee2b329e93219b93df918befe47b833f6f5d4f3ea7f",
+      "data": {
+        "amount": "10",
+        "token": "0xDB9F293e3898c9E5536A3be1b0C56c89d2b32DEb"
+      },
+      "timestamp": 1770571405531
+    }
+  ],
+  "durationMs": 100086,
+  "timestamp": "2026-02-08T17:23:25.531Z"
+}

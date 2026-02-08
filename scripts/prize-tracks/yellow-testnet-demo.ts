@@ -447,9 +447,16 @@ async function main() {
   log("Step 4: Executing off-chain transfer...");
   log("  This is instant — no on-chain tx needed");
 
+  // Transfer to the ClearNode broker (counterparty in the sandbox)
+  const brokerAddress =
+    (config as any).broker_address ||
+    "0xc7E6827ad9DA2c89188fAEd836F9285E6bFdCCCC";
+  log(`  Destination: ${brokerAddress}`);
+
   const transferMsg = await createTransferMessage(
     sessionSigner,
     {
+      destination: brokerAddress as `0x${string}`,
       allocations: [{ asset: "ytest.usd", amount: "5" }],
     },
     undefined,
