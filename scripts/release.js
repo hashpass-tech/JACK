@@ -526,13 +526,26 @@ try {
       );
     }
 
-    const isTestnetBuild = getBranchName() === "develop" ? "true" : "false";
+    const isTestnetBuild = getBranchName() === "develop";
+    const cloudbuildConfig = isTestnetBuild
+      ? "apps/dashboard/cloudbuild.testnet.yaml"
+      : "apps/dashboard/cloudbuild.yaml";
+    const cdnUrl =
+      process.env.NEXT_PUBLIC_CDN_URL ||
+      (isTestnetBuild
+        ? "https://storage.googleapis.com/jack-dashboard-testnet-assets"
+        : "https://storage.googleapis.com/jack-dashboard-assets");
+
+    console.log(
+      `Using ${isTestnetBuild ? "testnet" : "production"} Cloud Build config: ${cloudbuildConfig}`,
+    );
+    console.log(`CDN URL: ${cdnUrl}`);
 
     run(
-      `gcloud builds submit --region ${region} ${project} --config apps/dashboard/cloudbuild.yaml --substitutions=_IMAGE=${imageUri},_NEXT_PUBLIC_IS_TESTNET=${isTestnetBuild} .`,
+      `gcloud builds submit --region ${region} ${project} --config ${cloudbuildConfig} --substitutions=_IMAGE=${imageUri} .`,
     );
     run(
-      `gcloud run deploy ${process.env.GCLOUD_RUN_SERVICE} --image ${imageUri} --region ${region} ${project} ${allowUnauth}`,
+      `gcloud run deploy ${process.env.GCLOUD_RUN_SERVICE} --image ${imageUri} --region ${region} ${project} ${allowUnauth} --set-env-vars=NEXT_PUBLIC_CDN_URL=${cdnUrl}`,
     );
   }
 

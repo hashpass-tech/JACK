@@ -1,3 +1,39 @@
+## [0.1.56](https://github.com/hashpass-tech/JACK/compare/v0.1.55-testnet.2...v0.1.56) (2026-02-08)
+
+
+### Bug Fixes
+
+* **release:** properly route CDN and Cloud Build config per environment ([b56780d](https://github.com/hashpass-tech/JACK/commit/b56780dd1d622a91752ce88d7327d21487340b1a))
+
+
+### Features
+
+* **dashboard:** proper fullscreen toggle for walkthrough video modal ([c84073f](https://github.com/hashpass-tech/JACK/commit/c84073fa738ac2aa21352a91e82564723ed3c628))
+
+
+
+
+
+## [0.1.55](https://github.com/hashpass-tech/JACK/compare/v0.1.53-testnet.1...v0.1.55) (2026-02-08)
+
+
+### Bug Fixes
+
+* **security:** ensure CI workflow fails on security issues ([0f10284](https://github.com/hashpass-tech/JACK/commit/0f10284f4e431fe40966161840c91f396d8b5607))
+
+
+### Features
+
+* Add Uniswap v4 SDK integration with deployed contract addresses ([bb3f1bf](https://github.com/hashpass-tech/JACK/commit/bb3f1bf4531c73c01954f52434ff2246fa49a633))
+* Deploy Uniswap v4 contracts to Sepolia and add prize track documentation ([ce1f5f6](https://github.com/hashpass-tech/JACK/commit/ce1f5f6051561eba78be16a27560504257c90cfa))
+* implement GCS asset management for dashboard videos and images ([d0d0dbd](https://github.com/hashpass-tech/JACK/commit/d0d0dbd4ca1bf19e6f4800a11a97bf1b36289c17))
+* **security:** add comprehensive security linting enforcement ([fb4f82a](https://github.com/hashpass-tech/JACK/commit/fb4f82aea22610e300059ffd44913ad5e2285383))
+* **security:** add security rules to all package ESLint configs ([4bdd00b](https://github.com/hashpass-tech/JACK/commit/4bdd00bda7fbbaae6e70e3c2c79fd640f9e7e9dd))
+
+
+
+
+
 ## [0.1.54](https://github.com/hashpass-tech/JACK/compare/v0.1.53-testnet.1...v0.1.54) (2026-02-08)
 
 
