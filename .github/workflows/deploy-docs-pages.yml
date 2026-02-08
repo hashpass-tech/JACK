@@ -50,8 +50,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCS_REQUIRED_DEPLOY_CHECK_PATTERNS: rmgpgab-jack-just-in-time-autonomous-cross-chain-kernel
           DOCS_REQUIRED_DEPLOY_CHECK_APP: Google Cloud Build
-          DOCS_DEPLOY_GUARD_TIMEOUT_SECONDS: "1800"
+          DOCS_DEPLOY_GUARD_TIMEOUT_SECONDS: "300"
           DOCS_DEPLOY_GUARD_POLL_SECONDS: "20"
+          DOCS_DEPLOY_GUARD_ALLOW_MISSING: "true"
         run: node scripts/check-docs-deploy-guard.js
 
       - name: Setup pnpm

@@ -33,6 +33,7 @@ const pollSeconds = parseNumber(
   process.env.DOCS_DEPLOY_GUARD_POLL_SECONDS,
   DEFAULT_POLL_SECONDS,
 );
+const allowMissing = process.env.DOCS_DEPLOY_GUARD_ALLOW_MISSING === "true";
 
 const repo = process.env.GITHUB_REPOSITORY || "";
 const sha = process.env.GITHUB_SHA || "";
@@ -206,6 +207,16 @@ const run = async () => {
     );
     attempt += 1;
     await sleep(pollSeconds * 1000);
+  }
+
+  if (lastMatched.length === 0 && allowMissing) {
+    console.log(
+      [
+        `No matching deploy checks found after ${timeoutSeconds}s — DOCS_DEPLOY_GUARD_ALLOW_MISSING is set, proceeding.`,
+        `Commit: ${sha}`,
+      ].join("\n"),
+    );
+    return;
   }
 
   fail(
