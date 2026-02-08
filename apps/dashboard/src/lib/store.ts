@@ -6,10 +6,10 @@ const STORE_PATH = path.join(process.cwd(), 'intents-store.json');
 /**
  * Validates that an intentId is safe to use as an object property key.
  * Prevents prototype pollution by rejecting dangerous keys.
- * @param intentId - The intent ID to validate
+ * @param intentId - The intent ID to validate (accepts any type for runtime safety)
  * @returns true if the intentId is safe, false otherwise
  */
-export function isValidIntentId(intentId: string): boolean {
+export function isValidIntentId(intentId: unknown): intentId is string {
     return (
         typeof intentId === 'string' &&
         intentId.length > 0 &&
