@@ -432,7 +432,7 @@ settledIntents[intent.id] = true;
 **Important**: When creating intents involving ETH, use the network-appropriate WETH contract address (not address(0)):
 - Ethereum Mainnet: `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`
 - Sepolia Testnet: `0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9`
-- For other networks, refer to the [WETH deployment addresses](https://etherscan.io/token/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2)
+- For other networks, refer to official block explorers or the [Uniswap Token Lists](https://tokenlists.org/)
 
 ### Pool Validation
 
