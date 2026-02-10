@@ -7,7 +7,7 @@
  * - Connection status
  * - Viseme indicator
  */
-import React, { useState, useCallback } from "react";
+import React from "react";
 
 interface RecorderControlsProps {
   isRecording: boolean;

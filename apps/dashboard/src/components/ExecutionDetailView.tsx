@@ -218,6 +218,7 @@ export const ExecutionDetailView: React.FC<ExecutionDetailViewProps> = ({
 
         <div className="space-y-6 md:space-y-10">
           {/* Channel / V4 Status Panel */}
+          {/* eslint-disable @typescript-eslint/no-explicit-any */}
           <ChannelStatusPanel
             channelId={(intent as any)?.channelId}
             channelStatus={(intent as any)?.channelStatus}
@@ -230,6 +231,7 @@ export const ExecutionDetailView: React.FC<ExecutionDetailViewProps> = ({
             provider={(intent as any)?.provider}
             providerMetadata={(intent as any)?.providerMetadata}
           />
+          {/* eslint-enable @typescript-eslint/no-explicit-any */}
 
           <div className="bg-gradient-to-b from-[#F2B94B]/20 to-transparent border border-[#F2B94B]/30 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[#F2B94B]/20 rounded-full blur-2xl" />

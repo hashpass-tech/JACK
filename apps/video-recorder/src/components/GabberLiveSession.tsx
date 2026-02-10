@@ -11,7 +11,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import JackProceduralAvatar from "./JackProceduralAvatar";
 import {
-  GABBER_API_KEY,
+  GABBER_API_KEY, // eslint-disable-line @typescript-eslint/no-unused-vars
   GABBER_API_URL,
   GABBER_RUN_ID,
   GABBER_WEBHOOK_URL,
@@ -216,7 +216,7 @@ const GabberLiveSession: React.FC<GabberLiveSessionProps> = ({
         });
         setIsMicOn(true);
         setStatus("Mic on — Talk to JACK");
-      } catch (err) {
+      } catch {
         setError("Microphone access denied");
       }
     }

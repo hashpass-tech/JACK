@@ -70,7 +70,7 @@ const SECTIONS: SectionDef[] = (sectionsData as SectionDef[]).map(
   }),
 );
 
-const _TOTAL_FRAMES = SECTIONS[SECTIONS.length - 1].endFrame;
+const _TOTAL_FRAMES = SECTIONS[SECTIONS.length - 1].endFrame; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 // ── Subtitles (from generated audio) ──
 interface SubtitleEntry {

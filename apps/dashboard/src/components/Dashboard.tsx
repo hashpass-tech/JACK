@@ -535,6 +535,7 @@ const SettingsDialog: FC<{
       requestAnimationFrame(() =>
         requestAnimationFrame(() => setEntered(true)),
       );
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     else setEntered(false);
   }, [open]);
   if (!open) return null;
@@ -782,6 +783,7 @@ const Dashboard: FC<{ changelog?: string }> = ({ changelog = "" }) => {
   // Onboarding modal logic
   useEffect(() => {
     const hide = localStorage.getItem("jack-hide-onboarding");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowOnboarding(hide !== "true");
     if (hide !== "true") setShowOnboardingModal(true);
     const hideBanner = localStorage.getItem("jack-hide-banner");

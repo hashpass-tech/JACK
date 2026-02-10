@@ -671,6 +671,7 @@ function parseQuickIntent(raw: string): Partial<{
   const s = raw.toLowerCase().trim();
   const result: ReturnType<typeof parseQuickIntent> = {};
 
+  /* eslint-disable security/detect-unsafe-regex */
   const amtMatch = s.match(
     /(\d+(?:\.\d+)?)\s+(usdc|usdt|eth|weth|wbtc|link|dai)/,
   );
@@ -706,6 +707,7 @@ function parseQuickIntent(raw: string): Partial<{
   if (minMatch) result.minOut = minMatch[1];
 
   const dlMatch = s.match(/(?:by|in|within)\s+(\d+)\s*(?:m(?:in(?:utes?)?)?)/);
+  /* eslint-enable security/detect-unsafe-regex */
   if (dlMatch) result.deadlineMinutes = parseInt(dlMatch[1]);
 
   return result;
@@ -724,9 +726,11 @@ function parseReceiptText(text: string): Partial<{
   const s = text.toLowerCase();
   const result: ReturnType<typeof parseReceiptText> = {};
 
+  /* eslint-disable security/detect-unsafe-regex */
   const amtMatch = s.match(
     /(?:total|amount|pay|send|transfer)\s*[:\-]?\s*\$?(\d+(?:[.,]\d+)?)\s*(usdc|usdt|usd|dai)?/,
   );
+  /* eslint-enable security/detect-unsafe-regex */
   if (amtMatch) {
     result.amountIn = amtMatch[1].replace(",", ".");
     result.tokenIn = TOKEN_ALIASES[amtMatch[2] ?? "usdc"] ?? "USDC";

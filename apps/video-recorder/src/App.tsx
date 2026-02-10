@@ -26,8 +26,8 @@ const App: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [currentScene, setCurrentScene] = useState(SCENES[0]);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [currentViseme, setCurrentViseme] = useState("sil");
+  const [isSpeaking, setIsSpeaking] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [currentViseme, setCurrentViseme] = useState("sil"); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
