@@ -11,7 +11,7 @@
  * Pure procedural geometry — no VRM/GLTF files needed.
  * Used by GabberLiveSession for real-time AI avatar rendering.
  */
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 export interface JackProceduralAvatarProps {
@@ -28,7 +28,7 @@ const COAT_COLOR = 0x222222;
 const HAT_COLOR = 0x222222;
 const GOLD = 0xdaa520;
 const GOLD_BRIGHT = 0xffd700;
-const ACCENT_RED = 0x8b0000;
+const ACCENT_RED = 0x8b0000; // eslint-disable-line @typescript-eslint/no-unused-vars
 const EYE_WHITE = 0xeeeedd;
 const EYE_IRIS = 0x3d2b1f;
 const LIP_COLOR = 0x6b3a2a;

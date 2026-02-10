@@ -91,7 +91,7 @@ function retargetClip(clip: THREE.AnimationClip, vrm: VRM): THREE.AnimationClip 
     const vrmBoneName = MIXAMO_VRM_RIG_MAP[mixamoRigName];
 
     if (vrmBoneName) {
-      const vrmNode = vrm.humanoid?.getNormalizedBoneNode(vrmBoneName as any);
+      const vrmNode = vrm.humanoid?.getNormalizedBoneNode(vrmBoneName as string);
       if (vrmNode) {
         const propertyName = splitName.slice(1).join(".");
         if (propertyName.includes("quaternion")) {

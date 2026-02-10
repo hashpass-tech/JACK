@@ -14,13 +14,10 @@
  *   node scripts/generate-voiceover.mjs
  *   node scripts/generate-voiceover.mjs --voice en-US-GuyNeural
  */
-import { execSync, spawn } from "child_process";
+import { execSync } from "child_process";
 import {
   mkdirSync,
   writeFileSync,
-  readFileSync,
-  existsSync,
-  unlinkSync,
 } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";

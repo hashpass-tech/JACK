@@ -30,4 +30,24 @@ export default [
       "security/detect-bidi-characters": "error",
     },
   },
+  // Node.js scripts — allow globals like process, console, setTimeout, document
+  {
+    files: ["scripts/**/*.mjs", "scripts/**/*.js"],
+    languageOptions: {
+      globals: {
+        process: "readonly",
+        console: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        document: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+      },
+    },
+    rules: {
+      "no-undef": "off",
+    },
+  },
 ];
